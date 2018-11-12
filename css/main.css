@@ -1,7 +1,17 @@
+body,html {
+  font-family: system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol";
+}
+
 #svg-barchart {
-  height: 2200px;
+  height: 2500px;
 }
 
 .mode_label {
   text-anchor: middle;
+  font-weight: 600;
+}
+
+.nameLabel {
+  font-size: 11px;
+  text-anchor: end;
 }

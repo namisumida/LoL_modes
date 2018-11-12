@@ -2,8 +2,10 @@
 var margin = { top:10, bottom:10, left:10, right:10 };
 
 // Within columns
-var margin_col = { w_col:200, w_names:10, btwn_colnames:3, btwn_col:10, top:30 }
-var w_bars = margin_col.w_col - margin_col.w_names - margin_col.btwn_colnames;
+var dim_col = { w_col:200, w_names:80, btwn_colnames:5, btwn_col:10,
+                   h_col:12, h_btwn:5,
+                   top:30, left:5 }
+var w_bars = dim_col.w_col - dim_col.left - dim_col.w_names - dim_col.btwn_colnames;
 
 
 var svg = d3.select("#svg-barchart");
