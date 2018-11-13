@@ -19,3 +19,8 @@ body,html {
   font-size: 11px;
   text-anchor: end;
 }
+
+.breakline {
+  stroke: gray;
+  stroke-width: 0.1;
+}
