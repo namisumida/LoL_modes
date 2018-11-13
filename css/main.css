@@ -20,6 +20,11 @@ body,html {
   text-anchor: end;
 }
 
+.countLabel {
+  font-size: 11px;
+  fill: none;
+}
+
 .breakline {
   stroke: gray;
   stroke-width: 0.1;
