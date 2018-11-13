@@ -4,21 +4,42 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>League of Legends: Comparing three game modes</title>
-
+	<title>Offensive efficiency in ultimate frisbee</title>
 	<link type="text/css" href="css/main.css" rel="stylesheet"/>
-
 
 </head>
 
 <body>
-	<div "graphic-container">
-		<svg id="svg-barchart" width="100%" height="100%"></svg>
-	</div>
+	<section id="intro-section">
+		<div id="title-container">
+			<p class="intro-text" id="title">Offensive efficiency in ultimate frisbee games</p>
+		</div>
+		<svg id="intro-svg" height="20px", width="100%">
+			<line id="intro-line" x1="0" x2="1000" y1="10" y2="10">
+		</svg>
+		<div id="subtitle-container">
+			<p class="intro-text" id="subtitle">% of winning teams' offensive points that were converted and % of winning teams' offensive points that were single-possession scores</p>
+		</div>
+	</section>
+	<section id="graphic-section">
+		<select id="input">
+				<option value="all" selected="selected" class="dropdown">Show both metrics</option>
+				<option value="holds" class="dropdown">Show conversion rate only</option>
+				<option value="single" class="dropdown">Show single-possession score rate only</option>
+		</select>
+		<div id="graphic-container">
+			<svg id="graphic-svg" width="100%" height="100%"></svg>
+		</div>
+	</section>
 
-	<script src="https://d3js.org/d3.v4.min.js"></script>
-	<script src="js/build.js"></script>
-	<script src="js/main.js"></script>
+	<script type="text/javascript" src="https://d3js.org/d3.v4.min.js"></script>
+	<script src="js/ultimate_utils.js"></script>
+	<script src="js/utils.js"></script>
+	<script src='js/main.js'></script>
 
+	<script>
+
+	</script>
 </body>
+
 </html>

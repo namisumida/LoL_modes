@@ -1,17 +1,76 @@
-body,html {
-  font-family: system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol";
+html, body{
+  height: 100%;
+  font-family: 'Open Sans', sans-serif;
+  max-width: 1000px;
+  min-width: 500px;
+  margin-left: 10px;
+  margin-right: 10px;
 }
 
-#svg-barchart {
-  height: 2500px;
+.title-container {
+  position: relative;
+  line-height: 1.5;
+}
+#title {
+  font-size: 28px;
+  font-weight: 700;
+  margin-bottom: 0px;
+}
+#intro-svg {
+  position: relative;
+  top: -5px;
+}
+#intro-line {
+  stroke-width: 2;
+  stroke: black;
+}
+#subtitle-container {
+  position: relative;
+  line-height: 1.5;
+  top: -10px;
+}
+#subtitle {
+  font-size: 12px;
+  margin-top: 0px;
 }
 
-.mode_label {
-  text-anchor: middle;
-  font-weight: 600;
+#graphic-section {
+  position: relative;
 }
-
-.nameLabel {
+#input {
+  position: relative;
+  float: right;
+  top: -15px;
   font-size: 11px;
-  text-anchor: end;
+}
+
+#graphic-container {
+  position: relative;
+  margin: 15px;
+  top: 10px;
+}
+#graphic-svg {
+  position: relative;
+  min-height: 400px;
+}
+.div_labels {
+  text-anchor: middle;
+  font-weight: 800;
+  font-size: 18px;
+}
+
+.avg_label {
+  font-weight: 200;
+  text-anchor: start;
+  font-size: 11px;
+}
+.avg_text {
+  font-weight: 600;
+  text-anchor: middle;
+  font-size: 16px;
+}
+.tooltip_text {
+  font-weight: 200;
+  text-anchor: middle;
+  font-size: 12px;
 }
