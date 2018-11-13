@@ -3,13 +3,11 @@ body,html {
 }
 
 #graphic-container {
-  max-width: 720px;
   position: relative;
   margin: 0 auto;
-}
-
-#svg-barchart {
   height: 2500px;
+  max-width: 720px;
+  min-width: 360px;
 }
 
 .mode_label {
