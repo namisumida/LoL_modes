@@ -25,6 +25,13 @@ body,html {
   fill: none;
 }
 
+.rankLabel {
+  font-size: 11px;
+  fill:none;
+  font-weight: bold;
+  text-anchor: end;
+}
+
 .breakline {
   stroke: gray;
   stroke-width: 0.1;

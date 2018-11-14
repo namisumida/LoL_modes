@@ -6,7 +6,7 @@ var max_width = 720;
 var margin = { top:5, bottom:10, left:5, right:5 };
 
 // Dimensions for column sections
-var dim_col = { w_col:(w_svg-margin.left-margin.right)/3, w_names:80, btwn_colnames:5, btwn_col:(max_width-(max_width-w_svg))/100*2,
+var dim_col = { w_col:(w_svg-margin.left-margin.right)/3, w_names:105, btwn_colnames:5, btwn_col:(max_width-(max_width-w_svg))/100*2,
   w_colmin: 60,
   h_col:12, h_btwn:5,
   top:30, left:5 }
@@ -16,17 +16,17 @@ var w_bars = dim_col.w_col - dim_col.left - dim_col.w_names - dim_col.btwn_colna
 var orig_dataset; // original dataset
 var dataset_threemodes; // dataset with the three game modes
 var dataset; // dataset that changes based on filters
-var metric; // set play rate as default view
-var sort; // set to count
+var metric;
+var sort;
 
 // Colors
 var barColor = d3.rgb(185, 123, 134);
 var highlightBarColor = d3.rgb(86,46,53);
 var grayFontColor = d3.rgb(100,100,100);
 
-// Functions that create subsets
-var getSortedDataset = function(dataset, metric, game_mode, sort) { // input metric and game_mode; output sorted dataset ready to go in elements
-  var sub_dataset = dataset.filter(function(d) { return d.queueid == game_mode; })
+// Function that create subsets
+var getSortedDataset = function(dataset, metric, gameMode, sort) { // input metric and gameMode; output sorted dataset ready to go in elements
+  var sub_dataset = dataset.filter(function(d) { return d.queueid == gameMode; })
   if (sort == "count") { // sorting by metric count
     if (metric == "play") { // metric is play rate
       sub_dataset.sort(function(a,b) { return d3.descending(a.ngames, b.ngames); })
@@ -39,6 +39,27 @@ var getSortedDataset = function(dataset, metric, game_mode, sort) { // input met
     sub_dataset.sort(function(a,b) { return d3.descending(a.champion, b.champion); })
   }
   return(sub_dataset);
+}
+
+// Function that finds rank of champion to display on click
+var findRank = function(dataset, metric, gameMode, sort, championName) {
+  if (sort == "count") {
+    if (metric == "play") {
+      var sub_dataset = dataset.filter(function(d) { return d.queueid == gameMode; })
+                               .sort(function(a,b) { return d3.descending(a.ngames, b.ngames); })
+    }
+    else {
+      var sub_dataset = dataset.filter(function(d) { return d.queueid == gameMode; })
+                               .sort(function(a,b) { return d3.descending(a.nwins, b.nwins); })
+    }
+  }
+  else {
+    var sub_dataset = dataset.filter(function(d) { return d.queueid == gameMode; })
+                             .sort(function(a,b) { return d3.descending(a.champion, b.champion); })
+  }
+
+  // find rank in sub_dataset
+  return sub_dataset.findIndex(x => x.champion==championName)+1;
 }
 
 var rowConverter = function(d) {
@@ -332,11 +353,14 @@ d3.csv('data/game_data_match.csv', rowConverter, function(data) {
     // Change font weight of name labels in all columns
     champion_groups.selectAll(".nameLabel") // name text
                    .style("font-weight", 400)
+                   .text(function(d) { return d.champion; })
                    .filter(function(d) {
                      return d.champion==currentChampion;
                    })
                    .style("font-weight", "bold")
-                   .style("fill", "black");
+                   .text(function(d) {
+                     return "#" + findRank(dataset, metric, d.queueid, sort, d.champion) + " " + d.champion; // adds rank value to name label
+                   })
 
     // Change count labels in all columns
     champion_groups.selectAll(".countLabel")
@@ -350,6 +374,14 @@ d3.csv('data/game_data_match.csv', rowConverter, function(data) {
                      }
                      else { return "white";}
                    })
+      // Change rank labels in all columns
+      champion_groups.selectAll(".rankLabel")
+                     .style("fill", "none")
+                     .filter(function(d) {
+                       return d.champion==currentChampion;
+                     })
+                     .style("fill", "black");
+
   }); // end on mouseover function
 
 }) // end d3.csv()
