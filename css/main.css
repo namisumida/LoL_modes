@@ -2,12 +2,60 @@ body,html {
   font-family: system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol";
 }
 
+#options {
+  position: relative;
+  margin: 0 auto;
+  max-width: 600px;
+  min-width: 340px;
+  margin-top: 50px;
+}
+#container-options-metrics {
+  max-width: 220px;
+  min-width: 115px;
+  height: 80px;
+  margin: 0;
+}
+h4 {
+  margin: 8px;
+}
+button {
+  background-color: rgb(200,200,200);
+  font-size: 14px;
+  border-radius: 2px;
+  width: 78px;
+  height: 40px;
+  font-weight: 400;
+  -webkit-transition-duration: 0.4s; /* Safari */
+  transition-duration: 0.4s;
+}
+button:hover {
+  background-color: rgb(86,46,53);
+  color: white;
+}
+
+#svg-options-sort {
+  max-width: 220px;
+  min-width: 115px;
+  height: 80px;
+  margin: 0;
+  background: gray;
+}
+#svg-options-filter {
+  max-width: 115px;
+  min-width: 60px;
+  height: 80px;
+  margin: 0;
+  background: gray;
+}
+
+
 #graphic-container {
   position: relative;
   margin: 0 auto;
-  height: 2500px;
+  height: 2600px;
   max-width: 720px;
   min-width: 360px;
+  margin-top: 30px;
 }
 
 .mode_label {
@@ -16,17 +64,17 @@ body,html {
 }
 
 .nameLabel {
-  font-size: 11px;
+  font-size: 12px;
   text-anchor: end;
 }
 
 .countLabel {
-  font-size: 11px;
+  font-size: 12px;
   fill: none;
 }
 
 .rankLabel {
-  font-size: 11px;
+  font-size: 12px;
   fill:none;
   font-weight: bold;
   text-anchor: end;
