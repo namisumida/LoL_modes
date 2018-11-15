@@ -2,12 +2,52 @@ body,html {
   font-family: system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol";
 }
 
+#options {
+  position: relative;
+  margin: 0 auto;
+  max-width: 600px;
+  min-width: 340px;
+  margin-top: 50px;
+}
+#svg-options-metrics {
+  max-width: 220px;
+  min-width: 115px;
+  height: 80px;
+  margin: 0;
+}
+.options_title {
+  font-weight: 600;
+  font-size: 16px;
+}
+.options_text {
+  text-anchor: middle;
+  font-weight: bold;
+  font-size: 15px;
+}
+
+#svg-options-sort {
+  max-width: 220px;
+  min-width: 115px;
+  height: 80px;
+  margin: 0;
+  background: gray;
+}
+#svg-options-filter {
+  max-width: 115px;
+  min-width: 60px;
+  height: 80px;
+  margin: 0;
+  background: gray;
+}
+
+
 #graphic-container {
   position: relative;
   margin: 0 auto;
-  height: 2500px;
+  height: 2600px;
   max-width: 720px;
   min-width: 360px;
+  margin-top: 30px;
 }
 
 .mode_label {
@@ -16,17 +56,17 @@ body,html {
 }
 
 .nameLabel {
-  font-size: 11px;
+  font-size: 12px;
   text-anchor: end;
 }
 
 .countLabel {
-  font-size: 11px;
+  font-size: 12px;
   fill: none;
 }
 
 .rankLabel {
-  font-size: 11px;
+  font-size: 12px;
   fill:none;
   font-weight: bold;
   text-anchor: end;
