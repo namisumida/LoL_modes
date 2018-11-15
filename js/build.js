@@ -25,6 +25,9 @@ var barColor = d3.rgb(185, 123, 134);
 var highlightBarColor = d3.rgb(86,46,53);
 var light_gray = d3.rgb(200,200,200);
 
+// Groups for each column
+var group420, group450, group1200;
+
 // Function that create subsets
 var getSortedDataset = function(dataset, metric, gameMode, sort) { // input metric and gameMode; output sorted dataset ready to go in elements
   var sub_dataset = dataset.filter(function(d) { return d.queueid == gameMode; })
@@ -131,12 +134,12 @@ d3.csv('data/game_data_match.csv', rowConverter, function(data) {
       .text("Nexus Blitz");
 
   // 420 ranked 5v5 column
-  var group420 = col1.selectAll("group420")
-                      .data(getSortedDataset(dataset, metric, 420, sort))
-                      .enter()
-                      .append("g")
-                      .attr("class", "champion_group")
-                      .attr("transform", "translate(" + dim_col.left + "," + dim_col.top + ")");
+  group420 = col1.selectAll("group420")
+                  .data(getSortedDataset(dataset, metric, 420, sort))
+                  .enter()
+                  .append("g")
+                  .attr("class", "champion_group")
+                  .attr("transform", "translate(" + dim_col.left + "," + dim_col.top + ")");
   group420.append("text") // champion names
           .attr("class", "nameLabel")
           .attr("x", dim_col.w_names-dim_col.btwn_colnames)
@@ -182,7 +185,7 @@ d3.csv('data/game_data_match.csv', rowConverter, function(data) {
           });
 
   // 450 ARAM
-  var group450 = col2.selectAll("group450")
+  group450 = col2.selectAll("group450")
                      .data(getSortedDataset(dataset, metric, 450, sort))
                      .enter()
                      .append("g")
@@ -233,7 +236,7 @@ d3.csv('data/game_data_match.csv', rowConverter, function(data) {
           });
 
   // 1200 Nexus Blitz
-  var group1200 = col3.selectAll("group1200")
+  group1200 = col3.selectAll("group1200")
                      .data(getSortedDataset(dataset, metric, 1200, sort))
                      .enter()
                      .append("g")

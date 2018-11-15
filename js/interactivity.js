@@ -66,46 +66,43 @@ d3.csv('data/game_data_match.csv', rowConverter, function(data) {
   // Changing metrics
   var updateMetric = function(dataset, sort, metric) {
 
-    var group420 = d3.selectAll(".group420")
-                     .data(getSortedDataset(dataset, metric, 420, sort));
-    var group450 = d3.selectAll(".group450")
-                     .data(getSortedDataset(dataset, metric, 450, sort));
-    var group1200 = d3.selectAll(".group1200")
-                     .data(getSortedDataset(dataset, metric, 1200, sort));
+// Try binding a giant dataset. Right now they're 3 diff datasets so they probably can't figure out what's i??
 
-    svg.selectAll(".nameLabel")
-        .text(function(d) {
-          return d.champion;
-        })
-        .attr("y", function(d,i) {
-          return (dim_col.h_col+dim_col.h_btwn)*i + dim_col.h_col/2 +3;
-        });
-    svg.selectAll(".bar")
-        .attr("width", function(d) {
-          return runxScale(metric, d);
-        })
-        .attr("y", function(d,i) {
-          return (dim_col.h_col+dim_col.h_btwn)*i;
-        });
-    svg.selectAll(".countLabel")
-        .attr("x", function(d) {
-          if (runxScale(metric, d) <= dim_col.w_colmin) {
-            return dim_col.left+dim_col.w_names + runxScale(metric, d) + 3;
-          }
-          else { return dim_col.left+dim_col.w_names + runxScale(metric, d) - 5;}
-        })
-        .text(function(d) {
-          if (metric == "play") {
-            return d3.format(",")(d.ngames);
-          }
-          else { return d3.format(",")(d.nwins); }
-        })
-        .style("text-anchor", function(d) {
-          if (runxScale(metric, d) <= dim_col.w_colmin) {
-            return "start"
-          }
-          else { return "end"; }
-        });
+    group420.data(getSortedDataset(dataset, metric, 420, sort));
+
+    group420.select(".bar")
+            .attr("width", function(d) {
+              return runxScale(metric, d);
+            })
+            .attr("y", function(d,i) {
+              return (dim_col.h_col+dim_col.h_btwn)*(i%n_champion);
+            });
+    group420.select(".nameLabel")
+            .text(function(d) {
+              return d.champion;
+            })
+            .attr("y", function(d,i) {
+              return (dim_col.h_col+dim_col.h_btwn)*(i%n_champion) + dim_col.h_col/2 +3;
+            });
+    group420.select(".countLabel")
+            .attr("x", function(d) {
+              if (runxScale(metric, d) <= dim_col.w_colmin) {
+                return dim_col.left+dim_col.w_names + runxScale(metric, d) + 3;
+              }
+              else { return dim_col.left+dim_col.w_names + runxScale(metric, d) - 5;}
+            })
+            .text(function(d) {
+              if (metric == "play") {
+                return d3.format(",")(d.ngames);
+              }
+              else { return d3.format(",")(d.nwins); }
+            })
+            .style("text-anchor", function(d) {
+              if (runxScale(metric, d) <= dim_col.w_colmin) {
+                return "start"
+              }
+              else { return "end"; }
+            });
 
   } // end def of updateMetric
   d3.select("#button-win").on("click", function() {
