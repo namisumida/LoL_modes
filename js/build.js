@@ -4,7 +4,7 @@ var max_width = 720;
 var n_champion = 141;
 
 // Layout
-var margin = { top:5, bottom:10, left:5, right:15 };
+var margin = { top:5, bottom:10, left:0, right:20 };
 
 // Dimensions for column sections
 var dim_col = { w_col:(w_svg-margin.left-margin.right)/3, w_names:105, btwn_colnames:5, btwn_col:(max_width-(max_width-w_svg))/100*2,
@@ -25,7 +25,7 @@ var barColor = d3.rgb(185, 123, 134);
 var highlightBarColor = d3.rgb(86,46,53);
 var light_gray = d3.rgb(200,200,200);
 
-// Groups for each column
+// Defining groups
 var group420, group450, group1200;
 
 // Function that create subsets
@@ -40,28 +40,21 @@ var getSortedDataset = function(dataset, metric, gameMode, sort) { // input metr
     }
   }
   else { // sort alphabetically by name
-    sub_dataset.sort(function(a,b) { return d3.descending(a.champion, b.champion); })
+    sub_dataset.sort(function(a,b) { return d3.ascending(a.champion, b.champion); })
   }
   return(sub_dataset);
 }
 
 // Function that finds rank of champion to display on click
-var findRank = function(dataset, metric, gameMode, sort, championName) {
-  if (sort == "count") {
-    if (metric == "play") {
-      var sub_dataset = dataset.filter(function(d) { return d.queueid == gameMode; })
-                               .sort(function(a,b) { return d3.descending(a.ngames, b.ngames); })
-    }
-    else {
-      var sub_dataset = dataset.filter(function(d) { return d.queueid == gameMode; })
-                               .sort(function(a,b) { return d3.descending(a.nwins, b.nwins); })
-    }
+var findRank = function(dataset, metric, gameMode, championName) {
+  if (metric == "play") {
+    var sub_dataset = dataset.filter(function(d) { return d.queueid == gameMode; })
+                             .sort(function(a,b) { return d3.descending(a.ngames, b.ngames); })
   }
   else {
     var sub_dataset = dataset.filter(function(d) { return d.queueid == gameMode; })
-                             .sort(function(a,b) { return d3.descending(a.champion, b.champion); })
+                             .sort(function(a,b) { return d3.descending(a.nwins, b.nwins); })
   }
-
   // find rank in sub_dataset
   return sub_dataset.findIndex(x => x.champion==championName)+1;
 }
@@ -91,10 +84,10 @@ d3.csv('data/game_data_match.csv', rowConverter, function(data) {
   // Scale functions
   var xScale_play = d3.scaleLinear()
                       .domain([d3.min(dataset, function(d) { return d.ngames; }), d3.max(dataset, function(d) { return d.ngames})])
-                      .range([10, dim_col.w_col - dim_col.w_names - dim_col.btwn_colnames]);
+                      .range([1, dim_col.w_col - dim_col.w_names - dim_col.btwn_colnames]);
   var xScale_win = d3.scaleLinear()
                       .domain([d3.min(dataset, function(d) { return d.nwins; }), d3.max(dataset, function(d) { return d.nwins})])
-                      .range([10, dim_col.w_col - dim_col.w_names - dim_col.btwn_colnames]);
+                      .range([1, dim_col.w_col - dim_col.w_names - dim_col.btwn_colnames]);
   // Function that will take in the metric (metric being displayed) and use appropriate scale and spit out converted value
   var runxScale = function(metric, row) {
     if (metric == "play") {
@@ -186,11 +179,11 @@ d3.csv('data/game_data_match.csv', rowConverter, function(data) {
 
   // 450 ARAM
   group450 = col2.selectAll("group450")
-                     .data(getSortedDataset(dataset, metric, 450, sort))
-                     .enter()
-                     .append("g")
-                     .attr("class", "champion_group")
-                     .attr("transform", "translate(" + dim_col.left + "," + dim_col.top + ")");
+                 .data(getSortedDataset(dataset, metric, 450, sort))
+                 .enter()
+                 .append("g")
+                 .attr("class", "champion_group")
+                 .attr("transform", "translate(" + dim_col.left + "," + dim_col.top + ")");
   group450.append("text") // champion names
           .attr("class", "nameLabel")
           .attr("x", dim_col.w_names-dim_col.btwn_colnames)
@@ -237,11 +230,11 @@ d3.csv('data/game_data_match.csv', rowConverter, function(data) {
 
   // 1200 Nexus Blitz
   group1200 = col3.selectAll("group1200")
-                     .data(getSortedDataset(dataset, metric, 1200, sort))
-                     .enter()
-                     .append("g")
-                     .attr("class", "champion_group")
-                     .attr("transform", "translate(" + dim_col.left + "," + dim_col.top + ")");
+                   .data(getSortedDataset(dataset, metric, 1200, sort))
+                   .enter()
+                   .append("g")
+                   .attr("class", "champion_group")
+                   .attr("transform", "translate(" + dim_col.left + "," + dim_col.top + ")");
   group1200.append("text") // champion names
           .attr("class", "nameLabel")
           .attr("x", dim_col.w_names-dim_col.btwn_colnames)

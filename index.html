@@ -13,17 +13,27 @@
 <body>
 	<section id="options">
 		<div id="container-options-metrics">
-			<h4>Show:</h4>
-			<button type="button" id="button-play">Play rate</button>
-			<button type="button" id="button-win">Win rate</button>
+			<h5>Show:</h5>
+			<button type="button" id="button-play" value="play">Play rate</button>
+			<button type="button" id="button-win" value="win">Win rate</button>
 		</div>
-
-
+		<div id="container-options-sort">
+			<h5>Sort by:</h5>
+			<button type="button" id="button-count" value="count">Count</button>
+			<button type="button" id="button-alpha" value="alpha">Champion name</button>
+		</div>
+		<div id="container-options-filter">
+			<h5>Filter on:</h5>
+			<select id="filter-class">
+					<option value="all" selected="selected" class="dropdown-class">All classes</option>
+					<option value="fighter" class="dropdown-class">Fighter</option>
+					<option value="mage" class="dropdown-class">Mage</option>
+			</select>
+		</div>
 	</section>
-	<div id="graphic-container">
+	<section id="graphic">
 		<svg id="svg-barchart" width="100%" height="100%"></svg>
-	</div>
-
+	</section>
 	<script src="https://d3js.org/d3.v4.min.js"></script>
 	<script src="js/build.js"></script>
 	<script src="js/interactivity.js"></script>
