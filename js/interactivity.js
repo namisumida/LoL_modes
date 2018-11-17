@@ -6,14 +6,14 @@ d3.csv('data/game_data_match.csv', rowConverter, function(data) {
                       .domain([d3.min(dataset, function(d) { return d.ngames; }), d3.max(dataset, function(d) { return d.ngames})])
                       .range([1, dim_col.w_col - dim_col.w_names - dim_col.btwn_colnames]);
   var xScale_win = d3.scaleLinear()
-                      .domain([d3.min(dataset, function(d) { return d.nwins; }), d3.max(dataset, function(d) { return d.nwins})])
+                      .domain([d3.min(dataset, function(d) { return d.nwins/d.ngames; }), d3.max(dataset, function(d) { return d.nwins/d.ngames; })])
                       .range([1, dim_col.w_col - dim_col.w_names - dim_col.btwn_colnames]);
   // Function that will take in the metric (metric being displayed) and use appropriate scale and spit out converted value
   var runxScale = function(metric, row) {
     if (metric == "play") {
       return xScale_play(row.ngames);
     }
-    else { return xScale_win(row.nwins); }
+    else { return xScale_win(row.nwins/row.ngames); }
   }
 
   // Variable with all champion groups
@@ -89,9 +89,6 @@ d3.csv('data/game_data_match.csv', rowConverter, function(data) {
     d3.select(otherButtonID).style("background-color", d3.rgb(200,200,200))
                              .style("color", "black");
 
-    // Update filtering
-
-
     // update groups with new data
     group420.data(getSortedDataset(dataset, metric, 420, sort));
     group450.data(getSortedDataset(dataset, metric, 450, sort));
@@ -124,7 +121,7 @@ d3.csv('data/game_data_match.csv', rowConverter, function(data) {
               if (metric == "play") {
                 return d3.format(",")(d.ngames);
               }
-              else { return d3.format(",")(d.nwins); }
+              else { return d3.format(".0%")(d.nwins/d.ngames); }
             })
             .style("text-anchor", function(d) {
               if (runxScale(metric, d) <= dim_col.w_colmin) {
@@ -162,7 +159,7 @@ d3.csv('data/game_data_match.csv', rowConverter, function(data) {
               if (metric == "play") {
                 return d3.format(",")(d.ngames);
               }
-              else { return d3.format(",")(d.nwins); }
+              else { return d3.format(".0%")(d.nwins/d.ngames); }
             })
             .style("text-anchor", function(d) {
               if (runxScale(metric, d) <= dim_col.w_colmin) {
@@ -200,7 +197,7 @@ d3.csv('data/game_data_match.csv', rowConverter, function(data) {
               if (metric == "play") {
                 return d3.format(",")(d.ngames);
               }
-              else { return d3.format(",")(d.nwins); }
+              else { return d3.format(".0%")(d.nwins/d.ngames); }
             })
             .style("text-anchor", function(d) {
               if (runxScale(metric, d) <= dim_col.w_colmin) {

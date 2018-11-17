@@ -6,7 +6,7 @@ body,html {
   position: relative;
   margin: 0 auto;
   min-width: 430px;
-  max-width: 510px;
+  max-width: 530px;
   margin-top: 50px;
   height: 80px;
 }
@@ -56,10 +56,12 @@ button:focus {
 #button-play {
   background-color: rgb(86,46,53);
   color: white;
+  width: 80px;
 }
 #button-count {
   background-color: rgb(86,46,53);
   color: white;
+  width: 80px;
 }
 #button-alpha {
   width: 115px;
@@ -105,4 +107,8 @@ button:focus {
 .breakline {
   stroke: gray;
   stroke-width: 0.1;
+}
+
+.background {
+  fill: white;
 }
