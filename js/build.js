@@ -4,14 +4,14 @@ var max_width = 720;
 var n_champion = 141;
 
 // Layout
-var margin = { top:5, bottom:10, left:0, right:20 };
+var margin = { top:5, bottom:10, left:0, right:40 };
 
 // Dimensions for column sections
-var dim_col = { w_col:(w_svg-margin.left-margin.right)/3, w_names:105, btwn_colnames:5, btwn_col:(max_width-(max_width-w_svg))/100*2,
+var dim_col = { w_col:(w_svg-margin.left-margin.right)/3, w_names:105, btwn_colnames:3, btwn_col1:10, btwn_col2:10,
   w_colmin: 60,
   h_col:13, h_btwn:5,
   top:30, left:5 }
-var w_bars = dim_col.w_col - dim_col.left - dim_col.w_names - dim_col.btwn_colnames;
+var w_bars = dim_col.w_col - dim_col.left - dim_col.w_names - dim_col.btwn_col1 - dim_col.btwn_col2;
 
 // Saving datasets
 var orig_dataset; // original dataset
@@ -24,9 +24,10 @@ var sort;
 var breakline, group420, group450, group1200, group420enter, group450enter, group1200enter;
 
 // Colors
-var barColor = d3.rgb(185, 123, 134);
-var highlightBarColor = d3.rgb(86,46,53);
+var barColor = d3.color("#f6bba8");
+var highlightBarColor = d3.rgb(79,39,79);
 var light_gray = d3.rgb(200,200,200);
+var gray = d3.color("#a19da8");
 
 // Function that create subsets
 var getSortedDataset = function(dataset, metric, gameMode, sort) { // input metric and gameMode; output sorted dataset ready to go in elements
@@ -102,31 +103,31 @@ d3.csv('data/champion_stats_by_queue.csv', rowConverter, function(data) {
   // Second column - ARAM; 1200
   var col2 = svg.append("g") // make a group element
                 .attr("class", "column")
-                .attr("transform", "translate(" + (margin.left+dim_col.w_col+dim_col.btwn_col) + "," + margin.top + ")");
+                .attr("transform", "translate(" + (margin.left+dim_col.w_col+dim_col.btwn_col1) + "," + margin.top + ")");
   // Third column - Nexus Blitz; 450
   var col3 = svg.append("g") // make a group element
                 .attr("class", "column")
-                .attr("transform", "translate(" + (margin.left+dim_col.w_col*2+dim_col.btwn_col*2) + "," + margin.top + ")");
+                .attr("transform", "translate(" + (margin.left+dim_col.w_col*2+dim_col.btwn_col1+dim_col.btwn_col2) + "," + margin.top + ")");
 
   // Create labels
   col1.append("text")
       .attr("class", "mode_label")
       .attr("x", dim_col.w_col/2)
       .attr("y", 10)
-      .text("Ranked 5v5");
+      .text("Nexus Blitz");
   col2.append("text")
       .attr("class", "mode_label")
       .attr("x", dim_col.w_col/2)
       .attr("y", 10)
-      .text("ARAM");
+      .text("Ranked 5v5");
   col3.append("text")
       .attr("class", "mode_label")
       .attr("x", dim_col.w_col/2)
       .attr("y", 10)
-      .text("Nexus Blitz");
+      .text("ARAM");
 
   // 420 ranked 5v5 column
-  group420 = col1.selectAll("group420")
+  group420 = col2.selectAll("group420")
                   .data(getSortedDataset(dataset, metric, 420, sort))
                   .enter()
                   .append("g")
@@ -182,7 +183,7 @@ d3.csv('data/champion_stats_by_queue.csv', rowConverter, function(data) {
           });
 
   // 450 ARAM
-  group450 = col2.selectAll("group450")
+  group450 = col3.selectAll("group450")
                  .data(getSortedDataset(dataset, metric, 450, sort))
                  .enter()
                  .append("g")
@@ -238,7 +239,7 @@ d3.csv('data/champion_stats_by_queue.csv', rowConverter, function(data) {
           });
 
   // 1200 Nexus Blitz
-  group1200 = col3.selectAll("group1200")
+  group1200 = col1.selectAll("group1200")
                    .data(getSortedDataset(dataset, metric, 1200, sort))
                    .enter()
                    .append("g")

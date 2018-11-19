@@ -6,7 +6,7 @@ body,html {
   position: relative;
   margin: 0 auto;
   min-width: 430px;
-  max-width: 530px;
+  max-width: 550px;
   margin-top: 50px;
   height: 80px;
 }
@@ -38,39 +38,44 @@ body,html {
 
 h5 {
   margin: 8px;
+  color: #a19da8;
 }
 button {
-  background-color: rgb(200,200,200);
+  background-color: none;
   font-size: 13px;
   border-radius: 3px;
   width: 70px;
   height: 25px;
-  font-weight: 400;
+  font-weight: 600;
   -webkit-transition-duration: 0.4s; /* Safari */
   transition-duration: 0.4s;
+  color: #a19da8;
+  border: 1.5px solid #a19da8;
 }
 button:focus {
-  background-color: rgb(86,46,53);
+  background-color: #a19da8;
   color: white;
 }
 #button-play {
-  background-color: rgb(86,46,53);
+  background-color: #a19da8;
   color: white;
-  width: 80px;
+  width: 85px;
 }
 #button-count {
-  background-color: rgb(86,46,53);
+  background-color: #a19da8;
   color: white;
-  width: 80px;
+  width: 85px;
 }
 #button-alpha {
-  width: 115px;
+  width: 123px;
 }
 #filter-class {
-  background-color: rgb(200,200,200);
+  background-color: #a19da8;
   height: 25px;
   width: 115px;
   font-size: 13px;
+  color: white;
+  font-weight: 500;
 }
 
 #graphic {
@@ -78,7 +83,7 @@ button:focus {
   margin: 0 auto;
   height: 2600px;
   max-width: 720px;
-  min-width: 400px;
+  min-width: 650px;
   top: 20px;
 }
 
@@ -93,7 +98,7 @@ button:focus {
 }
 
 .countLabel {
-  font-size: 12px;
+  font-size: 11px;
   fill: none;
 }
 
