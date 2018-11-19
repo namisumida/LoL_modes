@@ -21,7 +21,7 @@ var metric;
 var sort;
 
 // Defining groups
-var group420, group450, group1200;
+var breakline, group420, group450, group1200, group420enter, group450enter, group1200enter;
 
 // Colors
 var barColor = d3.rgb(185, 123, 134);
@@ -64,11 +64,19 @@ var rowConverter = function(d) {
     champion: d.champion,
     queueid: parseInt(d.queueid),
     ngames: parseInt(d.ngames),
-    nwins: parseInt(d.nwins)
+    nwins: parseInt(d.nwins),
+    nkills: parseInt(d.nkills),
+    ndeaths: parseInt(d.ndeaths),
+    nassists: parseInt(d.nassists),
+    totalminionskilled: parseInt(d.totalminionskilled),
+    neutralminionskilled: parseInt(d.neutralminionskilled),
+    avgdamagedealtchampions: parseInt(d.avgdamagedealtchampions),
+    role: d.role,
+    broad_role: d.broad_role
   };
 }
 
-d3.csv('data/game_data_match.csv', rowConverter, function(data) {
+d3.csv('data/champion_stats_by_queue.csv', rowConverter, function(data) {
 
   // Datasets
   orig_dataset = data;
@@ -89,6 +97,7 @@ d3.csv('data/game_data_match.csv', rowConverter, function(data) {
   // Create column groups
   var col1 = svg.append("g") // make a group element
                 .attr("class", "column")
+                .attr("id", "col1")
                 .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
   // Second column - ARAM; 1200
   var col2 = svg.append("g") // make a group element
@@ -130,7 +139,7 @@ d3.csv('data/game_data_match.csv', rowConverter, function(data) {
             return (dim_col.h_col+dim_col.h_btwn)*i;
           })
           .attr("width", dim_col.w_col)
-          .attr("height", dim_col.h_col)
+          .attr("height", dim_col.h_col);
   group420.append("text") // champion names
           .attr("class", "nameLabel")
           .attr("x", dim_col.w_names-dim_col.btwn_colnames)
@@ -286,20 +295,20 @@ d3.csv('data/game_data_match.csv', rowConverter, function(data) {
 
   // Create line breaks
   var breakline_g = svg.append("g").attr("id", "breakline_g");
-  var breakline = breakline_g.selectAll("breakline")
-                              .data(getSortedDataset(dataset, metric, 1200, sort).filter(function(d,i) {
-                                return (i+1)%5==0;
-                              })) // this can be any mode, but should be based on the metric
-                              .enter()
-                              .append("line")
-                              .attr("class", "breakline")
-                              .attr("x1", 0)
-                              .attr("x2", w_svg-margin.left-margin.right)
-                              .attr("y1", function(d,i) {
-                                return margin.top + dim_col.top + (dim_col.h_col+dim_col.h_btwn)*(i+1)*5 - dim_col.h_btwn/2;
-                              })
-                              .attr("y2", function(d,i) {
-                                return margin.top + dim_col.top + (dim_col.h_col+dim_col.h_btwn)*(i+1)*5 - dim_col.h_btwn/2;
-                              });
+  breakline = breakline_g.selectAll("breakline")
+                          .data(getSortedDataset(dataset, metric, 1200, sort).filter(function(d,i) {
+                            return (i+1)%5==0;
+                          })) // this can be any mode, but should be based on the metric
+                          .enter()
+                          .append("line")
+                          .attr("class", "breakline")
+                          .attr("x1", 0)
+                          .attr("x2", w_svg-margin.left-margin.right)
+                          .attr("y1", function(d,i) {
+                            return margin.top + dim_col.top + (dim_col.h_col+dim_col.h_btwn)*(i+1)*5 - dim_col.h_btwn/2;
+                          })
+                          .attr("y2", function(d,i) {
+                            return margin.top + dim_col.top + (dim_col.h_col+dim_col.h_btwn)*(i+1)*5 - dim_col.h_btwn/2;
+                          });
 
 }) // end d3.csv()
