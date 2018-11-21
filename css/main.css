@@ -26,12 +26,29 @@ body,html {
   src: url("fonts/Stratum2-Medium.otf");
 }
 
-#options {
+#title {
   position: relative;
   margin: 0 auto;
   min-width: 430px;
   max-width: 550px;
   margin-top: 50px;
+}
+h1 {
+  font-family: radnika-boldcondensed;
+  font-size: 25px;
+  text-align: center;
+  margin: 0;
+}
+#title-line {
+  stroke-width: 2;
+  stroke: #a19da8;
+}
+#options {
+  position: relative;
+  margin: 0 auto;
+  min-width: 430px;
+  max-width: 550px;
+  margin-top: 20px;
   height: 60px;
 }
 #container-options-metrics {
