@@ -28,6 +28,10 @@ var barColor = d3.color("#f6bba8");
 var highlightBarColor = d3.rgb(79,39,79);
 var light_gray = d3.rgb(200,200,200);
 var gray = d3.color("#a19da8");
+var green = d3.rgb(196,202,138);
+var red = d3.rgb(227,128,115);
+var dark_green = d3.rgb(112,118,54);
+var dark_red = d3.rgb(143,44,28);
 
 // Function that create subsets
 var getSortedDataset = function(dataset, metric, gameMode, sort) { // input metric and gameMode; output sorted dataset ready to go in elements
@@ -216,23 +220,12 @@ d3.csv('data/champion_stats_by_queue.csv', rowConverter, function(data) {
             }
           })
           .attr("y", function(d,i) {
-            return (dim_col.h_col+dim_col.h_btwn)*i + dim_col.h_col/2-3;
+            return (dim_col.h_col+dim_col.h_btwn)*i;
           })
-          .attr("height", 6)
+          .attr("height", dim_col.h_col)
           .attr("width", function(d) {
             return Math.abs(xScale_win(d.nwins/d.ngames)-xScale_win(.5));
           })
-          .style("fill", "none");
-  group420.append("rect")
-          .attr("class", "dot")
-          .attr("x", function(d) {
-            return dim_col.left+dim_col.w_names + xScale_win(d.nwins/d.ngames)-2;
-          })
-          .attr("y", function(d,i) {
-            return (dim_col.h_col+dim_col.h_btwn)*i + dim_col.h_col/2-7;
-          })
-          .attr("width", 1)
-          .attr("height", 14)
           .style("fill", "none");
 
   // 450 ARAM
@@ -302,23 +295,12 @@ d3.csv('data/champion_stats_by_queue.csv', rowConverter, function(data) {
             }
           })
           .attr("y", function(d,i) {
-            return (dim_col.h_col+dim_col.h_btwn)*i + dim_col.h_col/2-3;
+            return (dim_col.h_col+dim_col.h_btwn)*i;
           })
-          .attr("height", 6)
+          .attr("height", dim_col.h_col)
           .attr("width", function(d) {
             return Math.abs(xScale_win(d.nwins/d.ngames)-xScale_win(.5));
           })
-          .style("fill", "none");
-  group450.append("rect")
-          .attr("class", "dot")
-          .attr("x", function(d) {
-            return dim_col.left+dim_col.w_names + xScale_win(d.nwins/d.ngames)-2;
-          })
-          .attr("y", function(d,i) {
-            return (dim_col.h_col+dim_col.h_btwn)*i + dim_col.h_col/2-7;
-          })
-          .attr("height", 14)
-          .attr("width", 1)
           .style("fill", "none");
 
   // 1200 Nexus Blitz
@@ -388,24 +370,13 @@ d3.csv('data/champion_stats_by_queue.csv', rowConverter, function(data) {
             }
           })
           .attr("y", function(d,i) {
-            return (dim_col.h_col+dim_col.h_btwn)*i + dim_col.h_col/2-3;
+            return (dim_col.h_col+dim_col.h_btwn)*i;
           })
-          .attr("height", 6)
+          .attr("height", dim_col.h_col)
           .attr("width", function(d) {
             return Math.abs(xScale_win(d.nwins/d.ngames)-xScale_win(.5));
           })
           .style("fill", "none");
-  group1200.append("rect")
-            .attr("class", "dot")
-            .attr("x", function(d) {
-              return dim_col.left+dim_col.w_names + xScale_win(d.nwins/d.ngames)-2;
-            })
-            .attr("y", function(d,i) {
-              return (dim_col.h_col+dim_col.h_btwn)*i + dim_col.h_col/2-7;
-            })
-            .attr("height", 14)
-            .attr("width", 1)
-            .style("fill", "none");
 
   // Create 50% lines for dot plots
   var currentHeight = d3.select("#col1").node().getBBox().height;

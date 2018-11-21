@@ -38,11 +38,17 @@ d3.csv('data/champion_stats_by_queue.csv', rowConverter, function(data) {
                        .style("fill", highlightBarColor);
       }
       else if (metric=="win") {
-        // Change dot color
-        champion_groups.selectAll(".dot")
-                       .style("fill", gray)
+        // Change dot distance color
+        champion_groups.selectAll(".dotDistance")
+                       .style("fill", function(d) {
+                         if (d.nwins/d.ngames >= 0.5) { return green; }
+                         else { return red; }
+                       })
                        .filter(function(d) { return d.champion==currentChampion; })
-                       .style("fill", highlightBarColor);
+                       .style("fill", function(d) {
+                         if (d.nwins/d.ngames >= 0.5) { return dark_green; }
+                         else { return dark_red; }
+                       });
       }
 
       // Change count labels in all columns
@@ -380,7 +386,7 @@ d3.csv('data/champion_stats_by_queue.csv', rowConverter, function(data) {
                     }
                  })
                  .attr("y", function(d,i) {
-                   return (dim_col.h_col+dim_col.h_btwn)*i + dim_col.h_col/2-3;
+                   return (dim_col.h_col+dim_col.h_btwn)*i;
                  })
                  .attr("height", 6)
                  .attr("width", function(d) {
@@ -388,8 +394,8 @@ d3.csv('data/champion_stats_by_queue.csv', rowConverter, function(data) {
                  })
                  .style("fill", function(d) {
                    if (metric=="win") {
-                     if (d.nwins/d.ngames > 0.5) { return "green";}
-                     else if (d.nwins/d.ngames < 0.5) { return "red"; }
+                     if (d.nwins/d.ngames > 0.5) { return green;}
+                     else if (d.nwins/d.ngames < 0.5) { return red; }
                    }
                    else { return "none"; }
                  });
@@ -405,7 +411,7 @@ d3.csv('data/champion_stats_by_queue.csv', rowConverter, function(data) {
                     }
                  })
                  .attr("y", function(d,i) {
-                   return (dim_col.h_col+dim_col.h_btwn)*i + dim_col.h_col/2-3;
+                   return (dim_col.h_col+dim_col.h_btwn)*i;
                  })
                  .attr("height", 6)
                  .attr("width", function(d) {
@@ -413,8 +419,8 @@ d3.csv('data/champion_stats_by_queue.csv', rowConverter, function(data) {
                  })
                  .style("fill", function(d) {
                    if (metric=="win") {
-                     if (d.nwins/d.ngames > 0.5) { return "green";}
-                     else if (d.nwins/d.ngames < 0.5) { return "red"; }
+                     if (d.nwins/d.ngames > 0.5) { return green;}
+                     else if (d.nwins/d.ngames < 0.5) { return red; }
                    }
                    else { return "none"; }
                  });
@@ -430,7 +436,7 @@ d3.csv('data/champion_stats_by_queue.csv', rowConverter, function(data) {
                       }
                    })
                    .attr("y", function(d,i) {
-                     return (dim_col.h_col+dim_col.h_btwn)*i + dim_col.h_col/2-3;
+                     return (dim_col.h_col+dim_col.h_btwn)*i;
                    })
                    .attr("height", 6)
                    .attr("width", function(d) {
@@ -438,61 +444,11 @@ d3.csv('data/champion_stats_by_queue.csv', rowConverter, function(data) {
                    })
                    .style("fill", function(d) {
                      if (metric=="win") {
-                       if (d.nwins/d.ngames > 0.5) { return "green";}
-                       else if (d.nwins/d.ngames < 0.5) { return "red"; }
+                       if (d.nwins/d.ngames > 0.5) { return green;}
+                       else if (d.nwins/d.ngames < 0.5) { return red; }
                      }
                      else { return "none"; }
                    });
-
-    // Dots
-    group420enter.append("rect")
-                  .attr("class", "dot")
-                  .attr("x", function(d) {
-                    return dim_col.left+dim_col.w_names + xScale_win(d.nwins/d.ngames)-2;
-                  })
-                  .attr("y", function(d,i) {
-                    return (dim_col.h_col+dim_col.h_btwn)*i + dim_col.h_col/2-5;
-                  })
-                  .attr("width", 1)
-                  .attr("height", 15)
-                  .style("fill", function(d) {
-                    if (metric=="win") {
-                      return gray;
-                    }
-                    else { return "none"; }
-                  });
-    group450enter.append("rect")
-                  .attr("class", "dot")
-                  .attr("x", function(d) {
-                    return dim_col.left+dim_col.w_names + xScale_win(d.nwins/d.ngames)-2;
-                  })
-                  .attr("y", function(d,i) {
-                    return (dim_col.h_col+dim_col.h_btwn)*i + dim_col.h_col/2-5;
-                  })
-                  .attr("height", 15)
-                  .attr("width", 1)
-                  .style("fill", function(d) {
-                    if (metric=="win") {
-                      return gray;
-                    }
-                    else { return "none"; }
-                  });
-    group1200enter.append("rect")
-                  .attr("class", "dot")
-                  .attr("x", function(d) {
-                    return dim_col.left+dim_col.w_names + xScale_win(d.nwins/d.ngames)-2;
-                  })
-                  .attr("y", function(d,i) {
-                    return (dim_col.h_col+dim_col.h_btwn)*i + dim_col.h_col/2-5;
-                  })
-                  .attr("height", 15)
-                  .attr("width", 1)
-                  .style("fill", function(d) {
-                    if (metric=="win") {
-                      return gray;
-                    }
-                    else { return "none"; }
-                  });
 
     // Merge enter groups with pre-existing groups
     group420 = group420.merge(group420enter);
@@ -670,15 +626,15 @@ d3.csv('data/champion_stats_by_queue.csv', rowConverter, function(data) {
                 }
              })
              .attr("y", function(d,i) {
-               return (dim_col.h_col+dim_col.h_btwn)*i + dim_col.h_col/2-3;
+               return (dim_col.h_col+dim_col.h_btwn)*i;
              })
              .attr("width", function(d) {
                return Math.abs(xScale_win(d.nwins/d.ngames)-xScale_win(.5));
              })
              .style("fill", function(d) {
                if (metric=="win") {
-                 if (d.nwins/d.ngames > 0.5) { return "green";}
-                 else if (d.nwins/d.ngames < 0.5) { return "red"; }
+                 if (d.nwins/d.ngames > 0.5) { return green;}
+                 else if (d.nwins/d.ngames < 0.5) { return red; }
                }
                else { return "none"; }
              });
@@ -693,15 +649,15 @@ d3.csv('data/champion_stats_by_queue.csv', rowConverter, function(data) {
                 }
              })
              .attr("y", function(d,i) {
-               return (dim_col.h_col+dim_col.h_btwn)*i + dim_col.h_col/2-3;
+               return (dim_col.h_col+dim_col.h_btwn)*i;
              })
              .attr("width", function(d) {
                return Math.abs(xScale_win(d.nwins/d.ngames)-xScale_win(.5));
              })
              .style("fill", function(d) {
                if (metric=="win") {
-                 if (d.nwins/d.ngames > 0.5) { return "green";}
-                 else if (d.nwins/d.ngames < 0.5) { return "red"; }
+                 if (d.nwins/d.ngames > 0.5) { return green;}
+                 else if (d.nwins/d.ngames < 0.5) { return red; }
                }
                else { return "none"; }
              });
@@ -716,64 +672,22 @@ d3.csv('data/champion_stats_by_queue.csv', rowConverter, function(data) {
                 }
              })
              .attr("y", function(d,i) {
-               return (dim_col.h_col+dim_col.h_btwn)*i + dim_col.h_col/2-3;
+               return (dim_col.h_col+dim_col.h_btwn)*i;
              })
              .attr("width", function(d) {
                return Math.abs(xScale_win(d.nwins/d.ngames)-xScale_win(.5));
              })
              .style("fill", function(d) {
                if (metric=="win") {
-                 if (d.nwins/d.ngames > 0.5) { return "green";}
-                 else if (d.nwins/d.ngames < 0.5) { return "red"; }
+                 if (d.nwins/d.ngames > 0.5) { return green;}
+                 else if (d.nwins/d.ngames < 0.5) { return red; }
                }
                else { return "none"; }
              });
-    // Dots
-    group420.select(".dot")
-            .attr("x", function(d) {
-              return dim_col.left+dim_col.w_names + xScale_win(d.nwins/d.ngames)-2;
-            })
-            .attr("y", function(d,i) {
-              return (dim_col.h_col+dim_col.h_btwn)*i + dim_col.h_col/2-7;
-            })
-            .style("fill", function(d) {
-              if (metric=="win") {
-                return gray;
-              }
-              else { return "none"; }
-            });
-    group450.select(".dot")
-            .attr("x", function(d) {
-              return dim_col.left+dim_col.w_names + xScale_win(d.nwins/d.ngames)-2;
-            })
-            .attr("y", function(d,i) {
-              return (dim_col.h_col+dim_col.h_btwn)*i + dim_col.h_col/2-7;
-            })
-            .style("fill", function(d) {
-              if (metric=="win") {
-                return gray;
-              }
-              else { return "none"; }
-            });
-    group1200.select(".dot")
-              .attr("x", function(d) {
-                return dim_col.left+dim_col.w_names + xScale_win(d.nwins/d.ngames)-2;
-              })
-              .attr("y", function(d,i) {
-                return (dim_col.h_col+dim_col.h_btwn)*i + dim_col.h_col/2-7;
-              })
-              .style("fill", function(d) {
-                if (metric=="win") {
-                  return gray;
-                }
-                else { return "none"; }
-              });
 
     if (metric=="play") {
       // Hide dots & dot distance rects
       svg.selectAll(".dotDistance")
-         .style("fill", "none");
-      svg.selectAll(".dot")
          .style("fill", "none");
     } // end if specific to bar
     else { // if specific to dots
