@@ -18,12 +18,12 @@ d3.csv('data/champion_stats_by_queue.csv', rowConverter, function(data) {
 
       // Change font weight of name labels in all columns
       champion_groups.selectAll(".nameLabel") // name text
-                     .style("font-weight", 400)
+                     .style("font-family", 'radnika-regular')
                      .text(function(d) { return d.champion; })
                      .filter(function(d) {
                        return d.champion==currentChampion;
                      })
-                     .style("font-weight", "bold")
+                     .style("font-family", 'radnika-bold')
                      .text(function(d) {
                        return "#" + findRank(dataset, metric, d.queueid, d.champion) + " " + d.champion; // adds rank value to name label
                      });
@@ -496,7 +496,7 @@ d3.csv('data/champion_stats_by_queue.csv', rowConverter, function(data) {
             .attr("y", function(d,i) {
               return (dim_col.h_col+dim_col.h_btwn)*i + dim_col.h_col/2 +3;
             })
-            .style("font-weight", 400);
+            .style("font-family", 'radnika-regular');
     group450.select(".nameLabel")
             .text(function(d) {
               return d.champion;
@@ -504,7 +504,7 @@ d3.csv('data/champion_stats_by_queue.csv', rowConverter, function(data) {
             .attr("y", function(d,i) {
               return (dim_col.h_col+dim_col.h_btwn)*i + dim_col.h_col/2 +3;
             })
-            .style("font-weight", 400);
+            .style("font-family", 'radnika-regular');
     group1200.select(".nameLabel")
             .text(function(d) {
               return d.champion;
@@ -512,7 +512,7 @@ d3.csv('data/champion_stats_by_queue.csv', rowConverter, function(data) {
             .attr("y", function(d,i) {
               return (dim_col.h_col+dim_col.h_btwn)*i + dim_col.h_col/2 +3;
             })
-            .style("font-weight", 400);
+            .style("font-family", 'radnika-regular');
     // Count labels
     group420.select(".countLabel")
             .attr("x", function(d) {
