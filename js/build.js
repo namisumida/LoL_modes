@@ -95,7 +95,7 @@ d3.csv('data/champion_stats_by_queue.csv', rowConverter, function(data) {
                       .domain([d3.min(dataset, function(d) { return d.ngames; }), d3.max(dataset, function(d) { return d.ngames})])
                       .range([1, dim_col.w_col - dim_col.w_names - dim_col.btwn_colnames]);
   var xScale_win = d3.scaleLinear()
-                      .domain([0.3, 0.7])
+                      .domain([0.34, 0.68])
                       .range([1, dim_col.w_col - dim_col.w_names - dim_col.btwn_colnames]);
 
   // Create column groups
@@ -226,13 +226,13 @@ d3.csv('data/champion_stats_by_queue.csv', rowConverter, function(data) {
   group420.append("rect")
           .attr("class", "dot")
           .attr("x", function(d) {
-            return dim_col.left+dim_col.w_names + xScale_win(d.nwins/d.ngames);
+            return dim_col.left+dim_col.w_names + xScale_win(d.nwins/d.ngames)-2;
           })
           .attr("y", function(d,i) {
-            return (dim_col.h_col+dim_col.h_btwn)*i + dim_col.h_col/2-5;
+            return (dim_col.h_col+dim_col.h_btwn)*i + dim_col.h_col/2-7;
           })
           .attr("width", 3)
-          .attr("height", 10)
+          .attr("height", 14)
           .style("fill", "none");
 
   // 450 ARAM
@@ -312,13 +312,13 @@ d3.csv('data/champion_stats_by_queue.csv', rowConverter, function(data) {
   group450.append("rect")
           .attr("class", "dot")
           .attr("x", function(d) {
-            return dim_col.left+dim_col.w_names + xScale_win(d.nwins/d.ngames);
+            return dim_col.left+dim_col.w_names + xScale_win(d.nwins/d.ngames)-2;
           })
           .attr("y", function(d,i) {
-            return (dim_col.h_col+dim_col.h_btwn)*i + dim_col.h_col/2-5;
+            return (dim_col.h_col+dim_col.h_btwn)*i + dim_col.h_col/2-7;
           })
-          .attr("height", 10)
-          .attr("width", 5)
+          .attr("height", 14)
+          .attr("width", 3)
           .style("fill", "none");
 
   // 1200 Nexus Blitz
@@ -398,13 +398,13 @@ d3.csv('data/champion_stats_by_queue.csv', rowConverter, function(data) {
   group1200.append("rect")
             .attr("class", "dot")
             .attr("x", function(d) {
-              return dim_col.left+dim_col.w_names + xScale_win(d.nwins/d.ngames);
+              return dim_col.left+dim_col.w_names + xScale_win(d.nwins/d.ngames)-2;
             })
             .attr("y", function(d,i) {
-              return (dim_col.h_col+dim_col.h_btwn)*i + dim_col.h_col/2-5;
+              return (dim_col.h_col+dim_col.h_btwn)*i + dim_col.h_col/2-7;
             })
-            .attr("height", 10)
-            .attr("width", 5)
+            .attr("height", 14)
+            .attr("width", 3)
             .style("fill", "none");
 
   // Create 50% lines for dot plots
