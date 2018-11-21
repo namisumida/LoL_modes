@@ -88,12 +88,18 @@ button:focus {
 }
 .midline {
   stroke-width: 2;
-  opacity: 0.5;
+  opacity: 0.3;
 }
 .midline_label {
   text-anchor: middle;
   font-weight: 400;
   font-size: 10px;
+}
+.dotDistance {
+  opacity: 0.2;
+}
+.dot {
+  opacity: 1;
 }
 .mode_label {
   text-anchor: middle;

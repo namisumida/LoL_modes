@@ -95,7 +95,7 @@ d3.csv('data/champion_stats_by_queue.csv', rowConverter, function(data) {
                       .domain([d3.min(dataset, function(d) { return d.ngames; }), d3.max(dataset, function(d) { return d.ngames})])
                       .range([1, dim_col.w_col - dim_col.w_names - dim_col.btwn_colnames]);
   var xScale_win = d3.scaleLinear()
-                      .domain([0, 1])
+                      .domain([0.2, 0.8])
                       .range([1, dim_col.w_col - dim_col.w_names - dim_col.btwn_colnames]);
 
   // Create column groups
@@ -204,6 +204,25 @@ d3.csv('data/champion_stats_by_queue.csv', rowConverter, function(data) {
             }
             else { return "end"; }
           });
+  group420.append("rect")
+          .attr("class", "dotDistance")
+          .attr("x", function(d) {
+            var winRate = d.nwins/d.ngames;
+            if (winRate > 0.5) {
+              return dim_col.left+dim_col.w_names + xScale_win(.5);
+            }
+            else {
+              return dim_col.left+dim_col.w_names + xScale_win(winRate);
+            }
+          })
+          .attr("y", function(d,i) {
+            return (dim_col.h_col+dim_col.h_btwn)*i + dim_col.h_col/2-3;
+          })
+          .attr("height", 6)
+          .attr("width", function(d) {
+            return Math.abs(xScale_win(d.nwins/d.ngames)-xScale_win(.5));
+          })
+          .style("fill", "none");
   group420.append("circle")
           .attr("class", "dot")
           .attr("cx", function(d) {
@@ -270,6 +289,25 @@ d3.csv('data/champion_stats_by_queue.csv', rowConverter, function(data) {
             }
             else { return "end"; }
           });
+  group450.append("rect")
+          .attr("class", "dotDistance")
+          .attr("x", function(d) {
+            var winRate = d.nwins/d.ngames;
+            if (winRate > 0.5) {
+              return dim_col.left+dim_col.w_names + xScale_win(.5);
+            }
+            else {
+              return dim_col.left+dim_col.w_names  + xScale_win(winRate);
+            }
+          })
+          .attr("y", function(d,i) {
+            return (dim_col.h_col+dim_col.h_btwn)*i + dim_col.h_col/2-3;
+          })
+          .attr("height", 6)
+          .attr("width", function(d) {
+            return Math.abs(xScale_win(d.nwins/d.ngames)-xScale_win(.5));
+          })
+          .style("fill", "none");
   group450.append("circle")
           .attr("class", "dot")
           .attr("cx", function(d) {
@@ -336,6 +374,25 @@ d3.csv('data/champion_stats_by_queue.csv', rowConverter, function(data) {
             }
             else { return "end"; }
           });
+  group1200.append("rect")
+          .attr("class", "dotDistance")
+          .attr("x", function(d) {
+            var winRate = d.nwins/d.ngames;
+            if (winRate > 0.5) {
+              return dim_col.left+dim_col.w_names + xScale_win(.5);
+            }
+            else {
+              return dim_col.left+dim_col.w_names  + xScale_win(winRate)
+            }
+          })
+          .attr("y", function(d,i) {
+            return (dim_col.h_col+dim_col.h_btwn)*i + dim_col.h_col/2-3;
+          })
+          .attr("height", 6)
+          .attr("width", function(d) {
+            return Math.abs(xScale_win(d.nwins/d.ngames)-xScale_win(.5));
+          })
+          .style("fill", "none");
   group1200.append("circle")
             .attr("class", "dot")
             .attr("cx", function(d) {
@@ -353,22 +410,22 @@ d3.csv('data/champion_stats_by_queue.csv', rowConverter, function(data) {
       .attr("class", "midline")
       .attr("x1", margin.left + dim_col.left+dim_col.w_names + xScale_win(.5))
       .attr("x2", margin.left + dim_col.left+dim_col.w_names + xScale_win(.5))
-      .attr("y1", margin.top + 25)
-      .attr("y2", margin.top + currentHeight)
+      .attr("y1", margin.top + 28)
+      .attr("y2", margin.top + currentHeight + 18)
       .style("stroke", "none");
   svg.append("line")
       .attr("class", "midline")
       .attr("x1", (margin.left+dim_col.w_col+dim_col.btwn_col1) + dim_col.left+dim_col.w_names + xScale_win(.5))
       .attr("x2", (margin.left+dim_col.w_col+dim_col.btwn_col1) + dim_col.left+dim_col.w_names + xScale_win(.5))
-      .attr("y1", margin.top + 25)
-      .attr("y2", margin.top + currentHeight)
+      .attr("y1", margin.top + 28)
+      .attr("y2", margin.top + currentHeight + 18)
       .style("stroke", "none");
   svg.append("line")
       .attr("class", "midline")
       .attr("x1", margin.left+dim_col.w_col*2+dim_col.btwn_col1+dim_col.btwn_col2 + dim_col.left+dim_col.w_names + xScale_win(.5))
       .attr("x2", margin.left+dim_col.w_col*2+dim_col.btwn_col1+dim_col.btwn_col2 + dim_col.left+dim_col.w_names + xScale_win(.5))
-      .attr("y1", margin.top + 25)
-      .attr("y2", margin.top + currentHeight)
+      .attr("y1", margin.top + 28)
+      .attr("y2", margin.top + currentHeight + 18)
       .style("stroke", "none");
 
   // Create line breaks
