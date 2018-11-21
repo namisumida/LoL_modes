@@ -4,7 +4,7 @@ var max_width = 720;
 var n_champion = 141;
 
 // Layout
-var margin = { top:5, bottom:10, left:0, right:40 };
+var margin = { top:30, bottom:10, left:0, right:40 };
 
 // Dimensions for column sections
 var dim_col = { w_col:(w_svg-margin.left-margin.right)/3, w_names:105, btwn_colnames:3, btwn_col1:10, btwn_col2:10,
@@ -94,6 +94,9 @@ d3.csv('data/champion_stats_by_queue.csv', rowConverter, function(data) {
   var xScale_play = d3.scaleLinear()
                       .domain([d3.min(dataset, function(d) { return d.ngames; }), d3.max(dataset, function(d) { return d.ngames})])
                       .range([1, dim_col.w_col - dim_col.w_names - dim_col.btwn_colnames]);
+  var xScale_win = d3.scaleLinear()
+                      .domain([0.2, 0.8])
+                      .range([1, dim_col.w_col - dim_col.w_names - dim_col.btwn_colnames]);
 
   // Create column groups
   var col1 = svg.append("g") // make a group element
@@ -113,18 +116,38 @@ d3.csv('data/champion_stats_by_queue.csv', rowConverter, function(data) {
   col1.append("text")
       .attr("class", "mode_label")
       .attr("x", dim_col.w_col/2)
-      .attr("y", 10)
+      .attr("y", 0)
       .text("Nexus Blitz");
   col2.append("text")
       .attr("class", "mode_label")
       .attr("x", dim_col.w_col/2)
-      .attr("y", 10)
+      .attr("y", 0)
       .text("Ranked 5v5");
   col3.append("text")
       .attr("class", "mode_label")
       .attr("x", dim_col.w_col/2)
-      .attr("y", 10)
+      .attr("y", 0)
       .text("ARAM");
+
+  // Create 50% midline label
+  col1.append("text")
+      .attr("class", "midline_label")
+      .attr("x", dim_col.left+dim_col.w_names + xScale_win(.5))
+      .attr("y", 23)
+      .text("50%")
+      .style("fill", "none");
+  col2.append("text")
+      .attr("class", "midline_label")
+      .attr("x", dim_col.left+dim_col.w_names + xScale_win(.5))
+      .attr("y", 23)
+      .text("50%")
+      .style("fill", "none");
+  col3.append("text")
+      .attr("class", "midline_label")
+      .attr("x", dim_col.left+dim_col.w_names + xScale_win(.5))
+      .attr("y", 23)
+      .text("50%")
+      .style("fill", "none");
 
   // 420 ranked 5v5 column
   group420 = col2.selectAll("group420")
@@ -132,7 +155,7 @@ d3.csv('data/champion_stats_by_queue.csv', rowConverter, function(data) {
                   .enter()
                   .append("g")
                   .attr("class", "champion_group")
-                  .attr("transform", "translate(" + dim_col.left + "," + dim_col.top + ")");
+                  .attr("transform", "translate(0," + dim_col.top + ")");
   group420.append("rect") // to allow clickability between name and rect
           .attr("class", "background")
           .attr("x", 0)
@@ -181,6 +204,35 @@ d3.csv('data/champion_stats_by_queue.csv', rowConverter, function(data) {
             }
             else { return "end"; }
           });
+  group420.append("rect")
+          .attr("class", "dotDistance")
+          .attr("x", function(d) {
+            var winRate = d.nwins/d.ngames;
+            if (winRate > 0.5) {
+              return dim_col.left+dim_col.w_names + xScale_win(.5);
+            }
+            else {
+              return dim_col.left+dim_col.w_names + xScale_win(winRate);
+            }
+          })
+          .attr("y", function(d,i) {
+            return (dim_col.h_col+dim_col.h_btwn)*i + dim_col.h_col/2-3;
+          })
+          .attr("height", 6)
+          .attr("width", function(d) {
+            return Math.abs(xScale_win(d.nwins/d.ngames)-xScale_win(.5));
+          })
+          .style("fill", "none");
+  group420.append("circle")
+          .attr("class", "dot")
+          .attr("cx", function(d) {
+            return dim_col.left+dim_col.w_names + xScale_win(d.nwins/d.ngames);
+          })
+          .attr("cy", function(d,i) {
+            return (dim_col.h_col+dim_col.h_btwn)*i + dim_col.h_col/2;
+          })
+          .attr("r", 5)
+          .style("fill", "none");
 
   // 450 ARAM
   group450 = col3.selectAll("group450")
@@ -188,7 +240,7 @@ d3.csv('data/champion_stats_by_queue.csv', rowConverter, function(data) {
                  .enter()
                  .append("g")
                  .attr("class", "champion_group")
-                 .attr("transform", "translate(" + dim_col.left + "," + dim_col.top + ")");
+                 .attr("transform", "translate(0," + dim_col.top + ")");
   group450.append("rect") // to allow clickability between name and rect
           .attr("class", "background")
           .attr("x", 0)
@@ -237,6 +289,35 @@ d3.csv('data/champion_stats_by_queue.csv', rowConverter, function(data) {
             }
             else { return "end"; }
           });
+  group450.append("rect")
+          .attr("class", "dotDistance")
+          .attr("x", function(d) {
+            var winRate = d.nwins/d.ngames;
+            if (winRate > 0.5) {
+              return dim_col.left+dim_col.w_names + xScale_win(.5);
+            }
+            else {
+              return dim_col.left+dim_col.w_names  + xScale_win(winRate);
+            }
+          })
+          .attr("y", function(d,i) {
+            return (dim_col.h_col+dim_col.h_btwn)*i + dim_col.h_col/2-3;
+          })
+          .attr("height", 6)
+          .attr("width", function(d) {
+            return Math.abs(xScale_win(d.nwins/d.ngames)-xScale_win(.5));
+          })
+          .style("fill", "none");
+  group450.append("circle")
+          .attr("class", "dot")
+          .attr("cx", function(d) {
+            return dim_col.left+dim_col.w_names + xScale_win(d.nwins/d.ngames);
+          })
+          .attr("cy", function(d,i) {
+            return (dim_col.h_col+dim_col.h_btwn)*i + dim_col.h_col/2;
+          })
+          .attr("r", 5)
+          .style("fill", "none");
 
   // 1200 Nexus Blitz
   group1200 = col1.selectAll("group1200")
@@ -244,7 +325,7 @@ d3.csv('data/champion_stats_by_queue.csv', rowConverter, function(data) {
                    .enter()
                    .append("g")
                    .attr("class", "champion_group")
-                   .attr("transform", "translate(" + dim_col.left + "," + dim_col.top + ")");
+                   .attr("transform", "translate(0," + dim_col.top + ")");
   group1200.append("rect") // to allow clickability between name and rect
             .attr("class", "background")
             .attr("x", 0)
@@ -293,6 +374,59 @@ d3.csv('data/champion_stats_by_queue.csv', rowConverter, function(data) {
             }
             else { return "end"; }
           });
+  group1200.append("rect")
+          .attr("class", "dotDistance")
+          .attr("x", function(d) {
+            var winRate = d.nwins/d.ngames;
+            if (winRate > 0.5) {
+              return dim_col.left+dim_col.w_names + xScale_win(.5);
+            }
+            else {
+              return dim_col.left+dim_col.w_names  + xScale_win(winRate)
+            }
+          })
+          .attr("y", function(d,i) {
+            return (dim_col.h_col+dim_col.h_btwn)*i + dim_col.h_col/2-3;
+          })
+          .attr("height", 6)
+          .attr("width", function(d) {
+            return Math.abs(xScale_win(d.nwins/d.ngames)-xScale_win(.5));
+          })
+          .style("fill", "none");
+  group1200.append("circle")
+            .attr("class", "dot")
+            .attr("cx", function(d) {
+              return dim_col.left+dim_col.w_names + xScale_win(d.nwins/d.ngames);
+            })
+            .attr("cy", function(d,i) {
+              return (dim_col.h_col+dim_col.h_btwn)*i + dim_col.h_col/2;
+            })
+            .attr("r", 5)
+            .style("fill", "none");
+
+  // Create 50% lines for dot plots
+  var currentHeight = d3.select("#col1").node().getBBox().height;
+  svg.append("line")
+      .attr("class", "midline")
+      .attr("x1", margin.left + dim_col.left+dim_col.w_names + xScale_win(.5))
+      .attr("x2", margin.left + dim_col.left+dim_col.w_names + xScale_win(.5))
+      .attr("y1", margin.top + 28)
+      .attr("y2", margin.top + currentHeight + 18)
+      .style("stroke", "none");
+  svg.append("line")
+      .attr("class", "midline")
+      .attr("x1", (margin.left+dim_col.w_col+dim_col.btwn_col1) + dim_col.left+dim_col.w_names + xScale_win(.5))
+      .attr("x2", (margin.left+dim_col.w_col+dim_col.btwn_col1) + dim_col.left+dim_col.w_names + xScale_win(.5))
+      .attr("y1", margin.top + 28)
+      .attr("y2", margin.top + currentHeight + 18)
+      .style("stroke", "none");
+  svg.append("line")
+      .attr("class", "midline")
+      .attr("x1", margin.left+dim_col.w_col*2+dim_col.btwn_col1+dim_col.btwn_col2 + dim_col.left+dim_col.w_names + xScale_win(.5))
+      .attr("x2", margin.left+dim_col.w_col*2+dim_col.btwn_col1+dim_col.btwn_col2 + dim_col.left+dim_col.w_names + xScale_win(.5))
+      .attr("y1", margin.top + 28)
+      .attr("y2", margin.top + currentHeight + 18)
+      .style("stroke", "none");
 
   // Create line breaks
   var breakline_g = svg.append("g").attr("id", "breakline_g");
