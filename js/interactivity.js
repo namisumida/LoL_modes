@@ -453,7 +453,7 @@ d3.csv('data/champion_stats_by_queue.csv', rowConverter, function(data) {
                   .attr("y", function(d,i) {
                     return (dim_col.h_col+dim_col.h_btwn)*i + dim_col.h_col/2-5;
                   })
-                  .attr("width", 3)
+                  .attr("width", 1)
                   .attr("height", 15)
                   .style("fill", function(d) {
                     if (metric=="win") {
@@ -470,7 +470,7 @@ d3.csv('data/champion_stats_by_queue.csv', rowConverter, function(data) {
                     return (dim_col.h_col+dim_col.h_btwn)*i + dim_col.h_col/2-5;
                   })
                   .attr("height", 15)
-                  .attr("width", 3)
+                  .attr("width", 1)
                   .style("fill", function(d) {
                     if (metric=="win") {
                       return gray;
@@ -486,7 +486,7 @@ d3.csv('data/champion_stats_by_queue.csv', rowConverter, function(data) {
                     return (dim_col.h_col+dim_col.h_btwn)*i + dim_col.h_col/2-5;
                   })
                   .attr("height", 15)
-                  .attr("width", 3)
+                  .attr("width", 1)
                   .style("fill", function(d) {
                     if (metric=="win") {
                       return gray;
