@@ -126,23 +126,26 @@ button:focus {
   position: relative;
   margin: 0 auto;
   height: 2630px;
-  max-width: 720px;
-  min-width: 650px;
+  width: 800px;
   margin-top: 20px;
 }
 .midline {
   stroke-width: 2;
-  opacity: 0.3;
+  opacity: .4;
 }
-.midline_label {
+.numline_label {
   text-anchor: middle;
   font-weight: 400;
   font-size: 10px;
+  font-family: stratum-medium;
 }
 .mode_label {
   text-anchor: middle;
   font-size: 16px;
   font-family: radnika-bold;
+}
+.dotDistance {
+  opacity: 0.5;
 }
 
 .nameLabel {
@@ -152,9 +155,9 @@ button:focus {
 }
 
 .countLabel {
-  font-size: 11px;
+  font-size: 12px;
   fill: none;
-  font-family: radnika-regular;
+  font-family: stratum-medium;
 }
 
 .rankLabel {
