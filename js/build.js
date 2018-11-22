@@ -28,10 +28,10 @@ var highlightBarColor = d3.rgb(79,39,79);
 var light_gray = d3.rgb(200,200,200);
 var dark_gray = d3.rgb(100,100,100);
 var gray = d3.color("#a19da8");
-var green = d3.rgb(148,157,72);
-var dark_green = d3.rgb(112,118,54);
+var green = d3.rgb(0,150,0);
+var dark_green = d3.rgb(0,200,0);
 var red = d3.rgb(227,128,115);
-var dark_red = d3.rgb(143,44,28);
+var dark_red = d3.rgb(320,44,28);
 
 // Function that create subsets
 var getSortedDataset = function(dataset, metric, gameMode, sort) { // input metric and gameMode; output sorted dataset ready to go in elements
@@ -133,24 +133,6 @@ d3.csv('data/champion_stats_by_queue.csv', rowConverter, function(data) {
       .attr("y", 0)
       .text("ARAM");
 
-  // Create line breaks
-  var breakline_g = svg.append("g").attr("id", "breakline_g");
-  breakline = breakline_g.selectAll("breakline")
-                          .data(getSortedDataset(dataset, metric, 1200, sort).filter(function(d,i) {
-                            return (i+1)%5==0;
-                          })) // this can be any mode, but should be based on the metric
-                          .enter()
-                          .append("line")
-                          .attr("class", "breakline")
-                          .attr("x1", 0)
-                          .attr("x2", w_svg-margin.left-margin.right)
-                          .attr("y1", function(d,i) {
-                            return margin.top + dim_col.top + (dim_col.h_col+dim_col.h_btwn)*(i+1)*5 - dim_col.h_btwn/2;
-                          })
-                          .attr("y2", function(d,i) {
-                            return margin.top + dim_col.top + (dim_col.h_col+dim_col.h_btwn)*(i+1)*5 - dim_col.h_btwn/2;
-                          });
-
   // Create all the groups
   group420 = col2.selectAll("group420")
                   .data(getSortedDataset(dataset, metric, 420, sort))
@@ -204,16 +186,6 @@ d3.csv('data/champion_stats_by_queue.csv', rowConverter, function(data) {
        .attr("y", 23)
        .text("50%")
        .style("fill", "none");
-   // Create 50% lines for dot plots
-   var currentHeight = d3.select("#col1").node().getBBox().height;
-   svg.selectAll(".column")
-       .append("line")
-       .attr("class", "midline")
-       .attr("x1", margin.left + dim_col.left+dim_col.w_names + xScale_win(.5))
-       .attr("x2", margin.left + dim_col.left+dim_col.w_names + xScale_win(.5))
-       .attr("y1", margin.top)
-       .attr("y2", margin.top + currentHeight)
-       .style("stroke", "none");
 
   // Name labels
   group420.append("text") // champion names
@@ -432,4 +404,45 @@ d3.csv('data/champion_stats_by_queue.csv', rowConverter, function(data) {
             .attr("r", 3)
             .style("fill", "none");
 
+  // Create 50% lines for dot plots
+  var currentHeight = d3.select("#col1").node().getBBox().height;
+  svg.append("line")
+      .attr("class", "midline")
+      .attr("x1", margin.left + dim_col.left+dim_col.w_names + xScale_win(.5))
+      .attr("x2", margin.left + dim_col.left+dim_col.w_names + xScale_win(.5))
+      .attr("y1", margin.top + 28)
+      .attr("y2", margin.top + currentHeight + 18)
+      .style("stroke", "none");
+  svg.append("line")
+      .attr("class", "midline")
+      .attr("x1", (margin.left+dim_col.w_col+dim_col.btwn_col1) + dim_col.left+dim_col.w_names + xScale_win(.5))
+      .attr("x2", (margin.left+dim_col.w_col+dim_col.btwn_col1) + dim_col.left+dim_col.w_names + xScale_win(.5))
+      .attr("y1", margin.top + 28)
+      .attr("y2", margin.top + currentHeight + 18)
+      .style("stroke", "none");
+  svg.append("line")
+      .attr("class", "midline")
+      .attr("x1", margin.left+dim_col.w_col*2+dim_col.btwn_col1+dim_col.btwn_col2 + dim_col.left+dim_col.w_names + xScale_win(.5))
+      .attr("x2", margin.left+dim_col.w_col*2+dim_col.btwn_col1+dim_col.btwn_col2 + dim_col.left+dim_col.w_names + xScale_win(.5))
+      .attr("y1", margin.top + 28)
+      .attr("y2", margin.top + currentHeight + 18)
+      .style("stroke", "none");
+
+  // Create line breaks
+  var breakline_g = svg.append("g").attr("id", "breakline_g");
+  breakline = breakline_g.selectAll("breakline")
+                          .data(getSortedDataset(dataset, metric, 1200, sort).filter(function(d,i) {
+                            return (i+1)%5==0;
+                          })) // this can be any mode, but should be based on the metric
+                          .enter()
+                          .append("line")
+                          .attr("class", "breakline")
+                          .attr("x1", 0)
+                          .attr("x2", w_svg-margin.left-margin.right)
+                          .attr("y1", function(d,i) {
+                            return margin.top + dim_col.top + (dim_col.h_col+dim_col.h_btwn)*(i+1)*5 - dim_col.h_btwn/2;
+                          })
+                          .attr("y2", function(d,i) {
+                            return margin.top + dim_col.top + (dim_col.h_col+dim_col.h_btwn)*(i+1)*5 - dim_col.h_btwn/2;
+                          });
 }) // end d3.csv()

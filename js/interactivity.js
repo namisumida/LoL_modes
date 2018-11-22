@@ -15,17 +15,32 @@ d3.csv('data/champion_stats_by_queue.csv', rowConverter, function(data) {
     // On click of champion_group
     champion_groups.on("click", function(d) {
       var currentChampion = d.champion;
-
+      var nextChampion;
       // Change font weight of name labels in all columns
       champion_groups.selectAll(".nameLabel") // name text
                      .style("font-family", 'radnika-regular')
                      .text(function(d) { return d.champion; })
-                     .filter(function(d) {
+                     .filter(function(d,i) {
                        return d.champion==currentChampion;
                      })
                      .style("font-family", 'radnika-bold')
                      .text(function(d) {
                        return "#" + findRank(dataset, metric, d.queueid, d.champion) + " " + d.champion; // adds rank value to name label
+                     });
+      // Change count labels in all columns
+      champion_groups.selectAll(".countLabel")
+                     .style("fill", "none")
+                     .filter(function(d) {
+                       return d.champion==currentChampion;
+                     })
+                     .style("fill", function(d) {
+                       if (metric=="play") {
+                         if (xScale_play(d.ngames) <= dim_col.w_colmin) {
+                           return "black";
+                         }
+                         else { return "white";}
+                       }
+                       else { return "black";}
                      });
 
       if (metric=="play") {
@@ -54,22 +69,6 @@ d3.csv('data/champion_stats_by_queue.csv', rowConverter, function(data) {
                          else { return dark_gray; }
                        });
       }
-
-      // Change count labels in all columns
-      champion_groups.selectAll(".countLabel")
-                     .style("fill", "none")
-                     .filter(function(d) {
-                       return d.champion==currentChampion;
-                     })
-                     .style("fill", function(d) {
-                       if (metric=="play") {
-                         if (xScale_play(d.ngames) <= dim_col.w_colmin) {
-                           return "black";
-                         }
-                         else { return "white";}
-                       }
-                       else { return "black";}
-                     });
     }); // end on mouseover function
   }; // end update mouseover
   updateMouseover();
@@ -110,9 +109,8 @@ d3.csv('data/champion_stats_by_queue.csv', rowConverter, function(data) {
   }; // end update button
 
   var updateSizing = function() {
-    // Resize entire window
-    document.getElementById("graphic").style.height = (currentHeight+30) + "px";
     var currentHeight = d3.select("#col1").node().getBBox().height;
+    document.getElementById("graphic").style.height = (currentHeight+30) + "px";
 
     // Breaklines
     breakline = breakline.data(getSortedDataset(dataset, "play", 1200, sort).filter(function(d,i) {
@@ -158,20 +156,6 @@ d3.csv('data/champion_stats_by_queue.csv', rowConverter, function(data) {
   var updateBarsDots = function(dataset, sort, metric) {
 
     updateData(dataset, sort, metric);
-
-    // Show 50% midline if play rate
-    if (metric=="win") {
-      svg.selectAll(".midline")
-         .style("stroke", gray);
-      svg.selectAll(".numline_label")
-         .style("fill", gray);
-    }
-    else if (metric=="play") {
-      svg.selectAll(".midline")
-         .style('stroke', "none");
-      svg.selectAll(".numline_label")
-         .style("fill", "none");
-    };
 
     // Enter groups
     var group420enter = group420.enter()
@@ -790,11 +774,19 @@ d3.csv('data/champion_stats_by_queue.csv', rowConverter, function(data) {
          .style("fill", "none");
       svg.selectAll(".dot")
          .style("fill", "none");
+      svg.selectAll(".midline")
+         .style('stroke', "none");
+      svg.selectAll(".numline_label")
+         .style("fill", "none");
     } // end if specific to bar
     else { // if specific to dots
       // Hide bars
       svg.selectAll(".bar")
          .style("fill", "none");
+      svg.selectAll(".midline")
+         .style("stroke", gray);
+      svg.selectAll(".numline_label")
+         .style("fill", gray);
     }; // end if specific to dots
 
     updateMouseover();
