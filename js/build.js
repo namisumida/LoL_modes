@@ -28,10 +28,10 @@ var highlightBarColor = d3.rgb(79,39,79);
 var light_gray = d3.rgb(200,200,200);
 var dark_gray = d3.rgb(100,100,100);
 var gray = d3.color("#a19da8");
-var green = d3.rgb(196,202,138);
-var dark_green = d3.rgb(112,118,54);
+var green = d3.rgb(0,150,0);
+var dark_green = d3.rgb(0,200,0);
 var red = d3.rgb(227,128,115);
-var dark_red = d3.rgb(143,44,28);
+var dark_red = d3.rgb(320,44,28);
 
 // Function that create subsets
 var getSortedDataset = function(dataset, metric, gameMode, sort) { // input metric and gameMode; output sorted dataset ready to go in elements
@@ -133,41 +133,61 @@ d3.csv('data/champion_stats_by_queue.csv', rowConverter, function(data) {
       .attr("y", 0)
       .text("ARAM");
 
-  // Create 50% midline label
-  col1.append("text")
-      .attr("class", "midline_label")
-      .attr("x", dim_col.left+dim_col.w_names + xScale_win(.5))
-      .attr("y", 23)
-      .text("50%")
-      .style("fill", "none");
-  col2.append("text")
-      .attr("class", "midline_label")
-      .attr("x", dim_col.left+dim_col.w_names + xScale_win(.5))
-      .attr("y", 23)
-      .text("50%")
-      .style("fill", "none");
-  col3.append("text")
-      .attr("class", "midline_label")
-      .attr("x", dim_col.left+dim_col.w_names + xScale_win(.5))
-      .attr("y", 23)
-      .text("50%")
-      .style("fill", "none");
-
-  // 420 ranked 5v5 column
+  // Create all the groups
   group420 = col2.selectAll("group420")
                   .data(getSortedDataset(dataset, metric, 420, sort))
                   .enter()
                   .append("g")
                   .attr("class", "champion_group")
                   .attr("transform", "translate(0," + dim_col.top + ")");
+  group450 = col3.selectAll("group450")
+                 .data(getSortedDataset(dataset, metric, 450, sort))
+                 .enter()
+                 .append("g")
+                 .attr("class", "champion_group")
+                 .attr("transform", "translate(0," + dim_col.top + ")");
+  group1200 = col1.selectAll("group1200")
+                   .data(getSortedDataset(dataset, metric, 1200, sort))
+                   .enter()
+                   .append("g")
+                   .attr("class", "champion_group")
+                   .attr("transform", "translate(0," + dim_col.top + ")");
+
+  // Create white backgrounds
   group420.append("rect") // to allow clickability between name and rect
-          .attr("class", "background")
-          .attr("x", 0)
-          .attr("y", function(d,i) {
+           .attr("class", "background")
+           .attr("x", 0)
+           .attr("y", function(d,i) {
             return (dim_col.h_col+dim_col.h_btwn)*i;
-          })
-          .attr("width", dim_col.w_col)
-          .attr("height", dim_col.h_col);
+           })
+           .attr("width", dim_col.w_col)
+           .attr("height", dim_col.h_col);
+  group450.append("rect") // to allow clickability between name and rect
+           .attr("class", "background")
+           .attr("x", 0)
+           .attr("y", function(d,i) {
+            return (dim_col.h_col+dim_col.h_btwn)*i;
+           })
+           .attr("width", dim_col.w_col)
+           .attr("height", dim_col.h_col);
+  group1200.append("rect") // to allow clickability between name and rect
+           .attr("class", "background")
+           .attr("x", 0)
+           .attr("y", function(d,i) {
+            return (dim_col.h_col+dim_col.h_btwn)*i;
+           })
+           .attr("width", dim_col.w_col)
+           .attr("height", dim_col.h_col);
+
+   // Create 50% midline label
+   svg.selectAll(".column").append("text")
+       .attr("class", "numline_label")
+       .attr("x", dim_col.left+dim_col.w_names + xScale_win(.5))
+       .attr("y", 23)
+       .text("50%")
+       .style("fill", "none");
+
+  // Name labels
   group420.append("text") // champion names
           .attr("class", "nameLabel")
           .attr("x", dim_col.w_names-dim_col.btwn_colnames)
@@ -177,6 +197,26 @@ d3.csv('data/champion_stats_by_queue.csv', rowConverter, function(data) {
           .text(function(d) {
             return d.champion;
           });
+  group450.append("text") // champion names
+          .attr("class", "nameLabel")
+          .attr("x", dim_col.w_names-dim_col.btwn_colnames)
+          .attr("y", function(d,i) {
+            return (dim_col.h_col+dim_col.h_btwn)*i + dim_col.h_col/2 +3;
+          })
+          .text(function(d) {
+            return d.champion;
+          });
+  group1200.append("text") // champion names
+          .attr("class", "nameLabel")
+          .attr("x", dim_col.w_names-dim_col.btwn_colnames)
+          .attr("y", function(d,i) {
+            return (dim_col.h_col+dim_col.h_btwn)*i + dim_col.h_col/2 +3;
+          })
+          .text(function(d) {
+            return d.champion;
+          });
+
+  // Bars
   group420.append("rect") // bars
           .attr("class", "bar")
           .attr("x", dim_col.left+dim_col.w_names)
@@ -188,6 +228,30 @@ d3.csv('data/champion_stats_by_queue.csv', rowConverter, function(data) {
           })
           .attr("height", dim_col.h_col)
           .style("fill", barColor);
+  group450.append("rect") // bars
+          .attr("class", "bar")
+          .attr("x", dim_col.left+dim_col.w_names)
+          .attr("y", function(d,i) {
+            return (dim_col.h_col+dim_col.h_btwn)*i
+          })
+          .attr("width", function(d) {
+            return xScale_play(d.ngames)
+          })
+          .attr("height", dim_col.h_col)
+          .style("fill", barColor);
+  group1200.append("rect") // bars
+          .attr("class", "bar")
+          .attr("x", dim_col.left+dim_col.w_names)
+          .attr("y", function(d,i) {
+            return (dim_col.h_col+dim_col.h_btwn)*i
+          })
+          .attr("width", function(d) {
+            return xScale_play(d.ngames);
+          })
+          .attr("height", dim_col.h_col)
+          .style("fill", barColor);
+
+  // Count labels
   group420.append("text")
           .attr("class", "countLabel")
           .attr("x", function(d) {
@@ -208,71 +272,6 @@ d3.csv('data/champion_stats_by_queue.csv', rowConverter, function(data) {
             }
             else { return "end"; }
           });
-  group420.append("rect")
-          .attr("class", "dotDistance")
-          .attr("x", function(d) {
-            var winRate = d.nwins/d.ngames;
-            if (winRate > 0.5) {
-              return dim_col.left+dim_col.w_names + xScale_win(.5);
-            }
-            else {
-              return dim_col.left+dim_col.w_names + xScale_win(winRate);
-            }
-          })
-          .attr("y", function(d,i) {
-            return (dim_col.h_col+dim_col.h_btwn)*i + dim_col.h_col/2-1;
-          })
-          .attr("height", 2)
-          .attr("width", function(d) {
-            return Math.abs(xScale_win(d.nwins/d.ngames)-xScale_win(.5));
-          })
-          .style("fill", "none");
-  group420.append("circle")
-          .attr("class", "dot")
-          .attr("cx", function(d) {
-            return dim_col.left+dim_col.w_names + xScale_win(d.nwins/d.ngames);
-          })
-          .attr("cy", function(d,i) {
-            return (dim_col.h_col+dim_col.h_btwn)*i + dim_col.h_col/2;
-          })
-          .attr("r", 3)
-          .style("fill", "none");
-
-  // 450 ARAM
-  group450 = col3.selectAll("group450")
-                 .data(getSortedDataset(dataset, metric, 450, sort))
-                 .enter()
-                 .append("g")
-                 .attr("class", "champion_group")
-                 .attr("transform", "translate(0," + dim_col.top + ")");
-  group450.append("rect") // to allow clickability between name and rect
-          .attr("class", "background")
-          .attr("x", 0)
-          .attr("y", function(d,i) {
-            return (dim_col.h_col+dim_col.h_btwn)*i;
-          })
-          .attr("width", dim_col.w_col)
-          .attr("height", dim_col.h_col);
-  group450.append("text") // champion names
-          .attr("class", "nameLabel")
-          .attr("x", dim_col.w_names-dim_col.btwn_colnames)
-          .attr("y", function(d,i) {
-            return (dim_col.h_col+dim_col.h_btwn)*i + dim_col.h_col/2 +3;
-          })
-          .text(function(d) {
-            return d.champion;
-          });
-  group450.append("rect") // bars
-          .attr("class", "bar")
-          .attr("x", dim_col.left+dim_col.w_names)
-          .attr("y", function(d,i) {
-            return (dim_col.h_col+dim_col.h_btwn)*i
-          })
-          .attr("width", function(d) {
-            return xScale_play(d.ngames)
-          })
-          .attr("height", dim_col.h_col)
-          .style("fill", barColor);
   group450.append("text") // count labels
           .attr("class", "countLabel")
           .attr("x", function(d) {
@@ -293,71 +292,6 @@ d3.csv('data/champion_stats_by_queue.csv', rowConverter, function(data) {
             }
             else { return "end"; }
           });
-  group450.append("rect")
-          .attr("class", "dotDistance")
-          .attr("x", function(d) {
-            var winRate = d.nwins/d.ngames;
-            if (winRate > 0.5) {
-              return dim_col.left+dim_col.w_names + xScale_win(.5);
-            }
-            else {
-              return dim_col.left+dim_col.w_names  + xScale_win(winRate);
-            }
-          })
-          .attr("y", function(d,i) {
-            return (dim_col.h_col+dim_col.h_btwn)*i + dim_col.h_col/2-1;
-          })
-          .attr("height", 2)
-          .attr("width", function(d) {
-            return Math.abs(xScale_win(d.nwins/d.ngames)-xScale_win(.5));
-          })
-          .style("fill", "none");
-  group450.append("circle")
-          .attr("class", "dot")
-          .attr("cx", function(d) {
-            return dim_col.left+dim_col.w_names + xScale_win(d.nwins/d.ngames);
-          })
-          .attr("cy", function(d,i) {
-            return (dim_col.h_col+dim_col.h_btwn)*i + dim_col.h_col/2;
-          })
-          .attr("r", 3)
-          .style("fill", "none");
-
-  // 1200 Nexus Blitz
-  group1200 = col1.selectAll("group1200")
-                   .data(getSortedDataset(dataset, metric, 1200, sort))
-                   .enter()
-                   .append("g")
-                   .attr("class", "champion_group")
-                   .attr("transform", "translate(0," + dim_col.top + ")");
-  group1200.append("rect") // to allow clickability between name and rect
-            .attr("class", "background")
-            .attr("x", 0)
-            .attr("y", function(d,i) {
-              return (dim_col.h_col+dim_col.h_btwn)*i;
-            })
-            .attr("width", dim_col.w_col)
-            .attr("height", dim_col.h_col);
-  group1200.append("text") // champion names
-          .attr("class", "nameLabel")
-          .attr("x", dim_col.w_names-dim_col.btwn_colnames)
-          .attr("y", function(d,i) {
-            return (dim_col.h_col+dim_col.h_btwn)*i + dim_col.h_col/2 +3;
-          })
-          .text(function(d) {
-            return d.champion;
-          });
-  group1200.append("rect") // bars
-          .attr("class", "bar")
-          .attr("x", dim_col.left+dim_col.w_names)
-          .attr("y", function(d,i) {
-            return (dim_col.h_col+dim_col.h_btwn)*i
-          })
-          .attr("width", function(d) {
-            return xScale_play(d.ngames);
-          })
-          .attr("height", dim_col.h_col)
-          .style("fill", barColor);
   group1200.append("text") // count labels
           .attr("class", "countLabel")
           .attr("x", function(d) {
@@ -378,10 +312,50 @@ d3.csv('data/champion_stats_by_queue.csv', rowConverter, function(data) {
             }
             else { return "end"; }
           });
+
+  // Dot distance
+  group420.append("rect")
+          .attr("class", "dotDistance")
+          .attr("x", function(d) {
+            var winRate = +(d.nwins/d.ngames).toFixed(2)
+            if (winRate > 0.5) {
+              return dim_col.left+dim_col.w_names + xScale_win(.5);
+            }
+            else {
+              return dim_col.left+dim_col.w_names + xScale_win(winRate);
+            }
+          })
+          .attr("y", function(d,i) {
+            return (dim_col.h_col+dim_col.h_btwn)*i + dim_col.h_col/2-1;
+          })
+          .attr("height", 2)
+          .attr("width", function(d) {
+            return Math.abs(xScale_win(+(d.nwins/d.ngames).toFixed(2))-xScale_win(.5));
+          })
+          .style("fill", "none");
+  group450.append("rect")
+          .attr("class", "dotDistance")
+          .attr("x", function(d) {
+            var winRate = +(d.nwins/d.ngames).toFixed(2)
+            if (winRate > 0.5) {
+              return dim_col.left+dim_col.w_names + xScale_win(.5);
+            }
+            else {
+              return dim_col.left+dim_col.w_names + xScale_win(winRate);
+            }
+          })
+          .attr("y", function(d,i) {
+            return (dim_col.h_col+dim_col.h_btwn)*i + dim_col.h_col/2-1;
+          })
+          .attr("height", 2)
+          .attr("width", function(d) {
+            return Math.abs(xScale_win(+(d.nwins/d.ngames).toFixed(2))-xScale_win(.5));
+          })
+          .style("fill", "none");
   group1200.append("rect")
           .attr("class", "dotDistance")
           .attr("x", function(d) {
-            var winRate = d.nwins/d.ngames;
+            var winRate = +(d.nwins/d.ngames).toFixed(2)
             if (winRate > 0.5) {
               return dim_col.left+dim_col.w_names + xScale_win(.5);
             }
@@ -394,13 +368,35 @@ d3.csv('data/champion_stats_by_queue.csv', rowConverter, function(data) {
           })
           .attr("height", 2)
           .attr("width", function(d) {
-            return Math.abs(xScale_win(d.nwins/d.ngames)-xScale_win(.5));
+            return Math.abs(xScale_win(+(d.nwins/d.ngames).toFixed(2))-xScale_win(.5));
           })
+          .style("fill", "none");
+
+  // Dots
+  group420.append("circle")
+          .attr("class", "dot")
+          .attr("cx", function(d) {
+            return dim_col.left+dim_col.w_names + xScale_win(+(d.nwins/d.ngames).toFixed(2));
+          })
+          .attr("cy", function(d,i) {
+            return (dim_col.h_col+dim_col.h_btwn)*i + dim_col.h_col/2;
+          })
+          .attr("r", 3)
+          .style("fill", "none");
+  group450.append("circle")
+          .attr("class", "dot")
+          .attr("cx", function(d) {
+            return dim_col.left+dim_col.w_names + xScale_win(+(d.nwins/d.ngames).toFixed(2));
+          })
+          .attr("cy", function(d,i) {
+            return (dim_col.h_col+dim_col.h_btwn)*i + dim_col.h_col/2;
+          })
+          .attr("r", 3)
           .style("fill", "none");
   group1200.append("circle")
             .attr("class", "dot")
             .attr("cx", function(d) {
-              return dim_col.left+dim_col.w_names + xScale_win(d.nwins/d.ngames);
+              return dim_col.left+dim_col.w_names + xScale_win(+(d.nwins/d.ngames).toFixed(2));
             })
             .attr("cy", function(d,i) {
               return (dim_col.h_col+dim_col.h_btwn)*i + dim_col.h_col/2;
@@ -449,5 +445,4 @@ d3.csv('data/champion_stats_by_queue.csv', rowConverter, function(data) {
                           .attr("y2", function(d,i) {
                             return margin.top + dim_col.top + (dim_col.h_col+dim_col.h_btwn)*(i+1)*5 - dim_col.h_btwn/2;
                           });
-
 }) // end d3.csv()
