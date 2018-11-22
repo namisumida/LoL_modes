@@ -5,7 +5,7 @@ d3.csv('data/champion_stats_by_queue.csv', rowConverter, function(data) {
                       .domain([d3.min(dataset, function(d) { return d.ngames; }), d3.max(dataset, function(d) { return d.ngames})])
                       .range([1, dim_col.w_col - dim_col.w_names - dim_col.btwn_colnames]);
   var xScale_win = d3.scaleLinear()
-                      .domain([0.2, 0.8])
+                      .domain([0.32, 0.7])
                       .range([1, dim_col.w_col - dim_col.w_names - dim_col.btwn_colnames]);
 
   // Variable with all champion groups
@@ -18,12 +18,12 @@ d3.csv('data/champion_stats_by_queue.csv', rowConverter, function(data) {
 
       // Change font weight of name labels in all columns
       champion_groups.selectAll(".nameLabel") // name text
-                     .style("font-weight", 400)
+                     .style("font-family", 'radnika-regular')
                      .text(function(d) { return d.champion; })
                      .filter(function(d) {
                        return d.champion==currentChampion;
                      })
-                     .style("font-weight", "bold")
+                     .style("font-family", 'radnika-bold')
                      .text(function(d) {
                        return "#" + findRank(dataset, metric, d.queueid, d.champion) + " " + d.champion; // adds rank value to name label
                      });
@@ -40,9 +40,19 @@ d3.csv('data/champion_stats_by_queue.csv', rowConverter, function(data) {
       else if (metric=="win") {
         // Change dot color
         champion_groups.selectAll(".dot")
-                       .style("fill", barColor)
+                       .style("fill", function(d) {
+                         var winRate = +(d.nwins/d.ngames).toFixed(2);
+                         if (winRate > .5) { return green; }
+                         else if (winRate < .5) { return red; }
+                         else { return gray; }
+                       })
                        .filter(function(d) { return d.champion==currentChampion; })
-                       .style("fill", highlightBarColor);
+                       .style("fill", function(d) {
+                         var winRate = +(d.nwins/d.ngames).toFixed(2);
+                         if (winRate > .5) { return dark_green; }
+                         else if (winRate < .5) { return dark_red; }
+                         else { return dark_gray; }
+                       });
       }
 
       // Change count labels in all columns
@@ -229,7 +239,7 @@ d3.csv('data/champion_stats_by_queue.csv', rowConverter, function(data) {
                    }
                    else {
                     if (d.nwins/d.ngames >= .5) {
-                      return dim_col.left+dim_col.w_names + xScale_win(d.nwins/d.ngames) + 8;
+                      return dim_col.left+dim_col.w_names + xScale_win(0.5) - 8;
                     }
                     else { return dim_col.left+dim_col.w_names + xScale_win(0.5) + 8; };
                    }
@@ -246,7 +256,10 @@ d3.csv('data/champion_stats_by_queue.csv', rowConverter, function(data) {
                      if (xScale_play(d.ngames) <= dim_col.w_colmin) { return "start"; }
                      else { return "end";}
                    }
-                   else { return "start"; }
+                   else {
+                     if (d.nwins/d.ngames >= .5) { return "end"; }
+                     else { return "start"; }
+                   }
                  });
     group450enter.append("text")
                  .attr("class", "countLabel")
@@ -259,7 +272,7 @@ d3.csv('data/champion_stats_by_queue.csv', rowConverter, function(data) {
                    }
                    else {
                     if (d.nwins/d.ngames >= .5) {
-                      return dim_col.left+dim_col.w_names + xScale_win(d.nwins/d.ngames) + 8;
+                      return dim_col.left+dim_col.w_names + xScale_win(0.5) - 8;
                     }
                     else { return dim_col.left+dim_col.w_names + xScale_win(0.5) + 8; };
                    }
@@ -277,8 +290,8 @@ d3.csv('data/champion_stats_by_queue.csv', rowConverter, function(data) {
                      else { return "end";}
                    }
                    else {
-                    if (d.nwins/d.ngames >= .5) { return "start"; }
-                    else { return "end"; };
+                     if (d.nwins/d.ngames >= .5) { return "end"; }
+                     else { return "start"; }
                    }
                  });
     group1200enter.append("text")
@@ -292,7 +305,7 @@ d3.csv('data/champion_stats_by_queue.csv', rowConverter, function(data) {
                      }
                      else {
                       if (d.nwins/d.ngames >= .5) {
-                        return dim_col.left+dim_col.w_names + xScale_win(d.nwins/d.ngames) + 8;
+                        return dim_col.left+dim_col.w_names + xScale_win(0.5) - 8;
                       }
                       else { return dim_col.left+dim_col.w_names + xScale_win(0.5) + 8; };
                      }
@@ -309,7 +322,10 @@ d3.csv('data/champion_stats_by_queue.csv', rowConverter, function(data) {
                        if (xScale_play(d.ngames) <= dim_col.w_colmin) { return "start"; }
                        else { return "end";}
                      }
-                     else { return "start"; }
+                     else {
+                       if (d.nwins/d.ngames >= .5) { return "end"; }
+                       else { return "start"; }
+                     }
                    });
     // Bars
     group420enter.append("rect") // bars
@@ -374,9 +390,9 @@ d3.csv('data/champion_stats_by_queue.csv', rowConverter, function(data) {
                     }
                  })
                  .attr("y", function(d,i) {
-                   return (dim_col.h_col+dim_col.h_btwn)*i + dim_col.h_col/2-3;
+                   return (dim_col.h_col+dim_col.h_btwn)*i + dim_col.h_col/2-1;
                  })
-                 .attr("height", 6)
+                 .attr("height", 2)
                  .attr("width", function(d) {
                    return Math.abs(xScale_win(d.nwins/d.ngames)-xScale_win(.5));
                  })
@@ -398,9 +414,9 @@ d3.csv('data/champion_stats_by_queue.csv', rowConverter, function(data) {
                     }
                  })
                  .attr("y", function(d,i) {
-                   return (dim_col.h_col+dim_col.h_btwn)*i + dim_col.h_col/2-3;
+                   return (dim_col.h_col+dim_col.h_btwn)*i + dim_col.h_col/2-1;
                  })
-                 .attr("height", 6)
+                 .attr("height", 2)
                  .attr("width", function(d) {
                    return Math.abs(xScale_win(d.nwins/d.ngames)-xScale_win(.5));
                  })
@@ -422,9 +438,9 @@ d3.csv('data/champion_stats_by_queue.csv', rowConverter, function(data) {
                       }
                    })
                    .attr("y", function(d,i) {
-                     return (dim_col.h_col+dim_col.h_btwn)*i + dim_col.h_col/2-3;
+                     return (dim_col.h_col+dim_col.h_btwn)*i + dim_col.h_col/2-1;
                    })
-                   .attr("height", 6)
+                   .attr("height", 2)
                    .attr("width", function(d) {
                      return Math.abs(xScale_win(d.nwins/d.ngames)-xScale_win(.5));
                    })
@@ -439,47 +455,47 @@ d3.csv('data/champion_stats_by_queue.csv', rowConverter, function(data) {
     group420enter.append("circle")
                   .attr("class", "dot")
                   .attr("cx", function(d) {
-                    return dim_col.left+dim_col.w_names + xScale_win(d.nwins/d.ngames);
+                    return dim_col.left+dim_col.w_names + xScale_win(+(d.nwins/d.ngames).toFixed(2));
                   })
                   .attr("cy", function(d,i) {
                     return (dim_col.h_col+dim_col.h_btwn)*i + dim_col.h_col/2;
                   })
-                  .attr("r", 5)
+                  .attr("r", 3)
                   .style("fill", function(d) {
-                    if (metric=="win") {
-                      return barColor;
-                    }
-                    else { return "none"; }
+                    var winRate = +(d.nwins/d.ngames).toFixed(2);
+                    if (winRate > .5) { return green; }
+                    else if (winRate < .5) { return red; }
+                    else { return gray; }
                   });
     group450enter.append("circle")
                   .attr("class", "dot")
                   .attr("cx", function(d) {
-                    return dim_col.left+dim_col.w_names + xScale_win(d.nwins/d.ngames);
+                    return dim_col.left+dim_col.w_names + xScale_win(+(d.nwins/d.ngames).toFixed(2));
                   })
                   .attr("cy", function(d,i) {
                     return (dim_col.h_col+dim_col.h_btwn)*i + dim_col.h_col/2;
                   })
-                  .attr("r", 5)
+                  .attr("r", 3)
                   .style("fill", function(d) {
-                    if (metric=="win") {
-                      return barColor;
-                    }
-                    else { return "none"; }
+                    var winRate = +(d.nwins/d.ngames).toFixed(2);
+                    if (winRate > .5) { return green; }
+                    else if (winRate < .5) { return red; }
+                    else { return gray; }
                   });
     group1200enter.append("circle")
                   .attr("class", "dot")
                   .attr("cx", function(d) {
-                    return dim_col.left+dim_col.w_names + xScale_win(d.nwins/d.ngames);
+                    return dim_col.left+dim_col.w_names + xScale_win(+(d.nwins/d.ngames).toFixed(2));
                   })
                   .attr("cy", function(d,i) {
                     return (dim_col.h_col+dim_col.h_btwn)*i + dim_col.h_col/2;
                   })
-                  .attr("r", 5)
+                  .attr("r", 3)
                   .style("fill", function(d) {
-                    if (metric=="win") {
-                      return barColor;
-                    }
-                    else { return "none"; }
+                    var winRate = +(d.nwins/d.ngames).toFixed(2);
+                    if (winRate > .5) { return green; }
+                    else if (winRate < .5) { return red; }
+                    else { return gray; }
                   });
 
     // Merge enter groups with pre-existing groups
@@ -496,7 +512,7 @@ d3.csv('data/champion_stats_by_queue.csv', rowConverter, function(data) {
             .attr("y", function(d,i) {
               return (dim_col.h_col+dim_col.h_btwn)*i + dim_col.h_col/2 +3;
             })
-            .style("font-weight", 400);
+            .style("font-family", 'radnika-regular');
     group450.select(".nameLabel")
             .text(function(d) {
               return d.champion;
@@ -504,7 +520,7 @@ d3.csv('data/champion_stats_by_queue.csv', rowConverter, function(data) {
             .attr("y", function(d,i) {
               return (dim_col.h_col+dim_col.h_btwn)*i + dim_col.h_col/2 +3;
             })
-            .style("font-weight", 400);
+            .style("font-family", 'radnika-regular');
     group1200.select(".nameLabel")
             .text(function(d) {
               return d.champion;
@@ -512,7 +528,7 @@ d3.csv('data/champion_stats_by_queue.csv', rowConverter, function(data) {
             .attr("y", function(d,i) {
               return (dim_col.h_col+dim_col.h_btwn)*i + dim_col.h_col/2 +3;
             })
-            .style("font-weight", 400);
+            .style("font-family", 'radnika-regular');
     // Count labels
     group420.select(".countLabel")
             .attr("x", function(d) {
@@ -524,7 +540,7 @@ d3.csv('data/champion_stats_by_queue.csv', rowConverter, function(data) {
               }
               else {
                if (d.nwins/d.ngames >= .5) {
-                 return dim_col.left+dim_col.w_names + xScale_win(d.nwins/d.ngames) + 8;
+                 return dim_col.left+dim_col.w_names + xScale_win(0.5) - 8;
                }
                else { return dim_col.left+dim_col.w_names + xScale_win(0.5) + 8; };
               }
@@ -538,7 +554,10 @@ d3.csv('data/champion_stats_by_queue.csv', rowConverter, function(data) {
                 if (xScale_play(d.ngames) <= dim_col.w_colmin) { return "start"; }
                 else { return "end";}
               }
-              else { return "start"; }
+              else {
+                if (d.nwins/d.ngames >= .5) { return "end"; }
+                else { return "start"; }
+              }
             })
             .style("fill", "none");
     group450.select(".countLabel")
@@ -551,7 +570,7 @@ d3.csv('data/champion_stats_by_queue.csv', rowConverter, function(data) {
               }
               else {
                if (d.nwins/d.ngames >= .5) {
-                 return dim_col.left+dim_col.w_names + xScale_win(d.nwins/d.ngames) + 8;
+                 return dim_col.left+dim_col.w_names + xScale_win(0.5) - 8;
                }
                else { return dim_col.left+dim_col.w_names + xScale_win(0.5) + 8; };
               }
@@ -565,7 +584,10 @@ d3.csv('data/champion_stats_by_queue.csv', rowConverter, function(data) {
                 if (xScale_play(d.ngames) <= dim_col.w_colmin) { return "start"; }
                 else { return "end";}
               }
-              else { return "start"; }
+              else {
+                if (d.nwins/d.ngames >= .5) { return "end"; }
+                else { return "start"; }
+              }
             })
             .style("fill", "none");
     group1200.select(".countLabel")
@@ -578,7 +600,7 @@ d3.csv('data/champion_stats_by_queue.csv', rowConverter, function(data) {
                }
                else {
                 if (d.nwins/d.ngames >= .5) {
-                  return dim_col.left+dim_col.w_names + xScale_win(d.nwins/d.ngames) + 8;
+                  return dim_col.left+dim_col.w_names + xScale_win(0.5) - 8;
                 }
                 else { return dim_col.left+dim_col.w_names + xScale_win(0.5) + 8; };
                }
@@ -592,7 +614,10 @@ d3.csv('data/champion_stats_by_queue.csv', rowConverter, function(data) {
                  if (xScale_play(d.ngames) <= dim_col.w_colmin) { return "start"; }
                  else { return "end";}
                }
-               else { return "start"; }
+               else {
+                 if (d.nwins/d.ngames >= .5) { return "end"; }
+                 else { return "start"; }
+               }
              })
              .style("fill", "none");
 
@@ -649,7 +674,7 @@ d3.csv('data/champion_stats_by_queue.csv', rowConverter, function(data) {
                 }
              })
              .attr("y", function(d,i) {
-               return (dim_col.h_col+dim_col.h_btwn)*i + dim_col.h_col/2-3;
+               return (dim_col.h_col+dim_col.h_btwn)*i + dim_col.h_col/2-1;
              })
              .attr("width", function(d) {
                return Math.abs(xScale_win(d.nwins/d.ngames)-xScale_win(.5));
@@ -671,7 +696,7 @@ d3.csv('data/champion_stats_by_queue.csv', rowConverter, function(data) {
                 }
              })
              .attr("y", function(d,i) {
-               return (dim_col.h_col+dim_col.h_btwn)*i + dim_col.h_col/2-3;
+               return (dim_col.h_col+dim_col.h_btwn)*i + dim_col.h_col/2-1;
              })
              .attr("width", function(d) {
                return Math.abs(xScale_win(d.nwins/d.ngames)-xScale_win(.5));
@@ -693,7 +718,7 @@ d3.csv('data/champion_stats_by_queue.csv', rowConverter, function(data) {
                 }
              })
              .attr("y", function(d,i) {
-               return (dim_col.h_col+dim_col.h_btwn)*i + dim_col.h_col/2-3;
+               return (dim_col.h_col+dim_col.h_btwn)*i + dim_col.h_col/2-1;
              })
              .attr("width", function(d) {
                return Math.abs(xScale_win(d.nwins/d.ngames)-xScale_win(.5));
@@ -707,42 +732,42 @@ d3.csv('data/champion_stats_by_queue.csv', rowConverter, function(data) {
     // Dots
     group420.select(".dot")
             .attr("cx", function(d) {
-              return dim_col.left+dim_col.w_names + xScale_win(d.nwins/d.ngames);
+              return dim_col.left+dim_col.w_names + xScale_win(+(d.nwins/d.ngames).toFixed(2));
             })
             .attr("cy", function(d,i) {
               return (dim_col.h_col+dim_col.h_btwn)*i + dim_col.h_col/2;
             })
             .style("fill", function(d) {
-              if (metric=="win") {
-                return barColor;
-              }
-              else { return "none"; }
+              var winRate = +(d.nwins/d.ngames).toFixed(2);
+              if (winRate > .5) { return green; }
+              else if (winRate < .5) { return red; }
+              else { return gray; }
             });
     group450.select(".dot")
             .attr("cx", function(d) {
-              return dim_col.left+dim_col.w_names + xScale_win(d.nwins/d.ngames);
+              return dim_col.left+dim_col.w_names + xScale_win(+(d.nwins/d.ngames).toFixed(2));
             })
             .attr("cy", function(d,i) {
               return (dim_col.h_col+dim_col.h_btwn)*i + dim_col.h_col/2;
             })
             .style("fill", function(d) {
-              if (metric=="win") {
-                return barColor;
-              }
-              else { return "none"; }
+              var winRate = +(d.nwins/d.ngames).toFixed(2);
+              if (winRate > .5) { return green; }
+              else if (winRate < .5) { return red; }
+              else { return gray; }
             });
     group1200.select(".dot")
               .attr("cx", function(d) {
-                return dim_col.left+dim_col.w_names + xScale_win(d.nwins/d.ngames);
+                return dim_col.left+dim_col.w_names + xScale_win(+(d.nwins/d.ngames).toFixed(2));
               })
               .attr("cy", function(d,i) {
                 return (dim_col.h_col+dim_col.h_btwn)*i + dim_col.h_col/2;
               })
               .style("fill", function(d) {
-                if (metric=="win") {
-                  return barColor;
-                }
-                else { return "none"; }
+                var winRate = +(d.nwins/d.ngames).toFixed(2);
+                if (winRate > .5) { return green; }
+                else if (winRate < .5) { return red; }
+                else { return gray; }
               });
 
     if (metric=="play") {

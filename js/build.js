@@ -1,13 +1,12 @@
 var svg = d3.select("#svg-barchart");
 var w_svg = document.getElementById('svg-barchart').getBoundingClientRect().width; // get width and height based on window size
-var max_width = 720;
 var n_champion = 141;
 
 // Layout
 var margin = { top:30, bottom:10, left:0, right:40 };
 
 // Dimensions for column sections
-var dim_col = { w_col:(w_svg-margin.left-margin.right)/3, w_names:105, btwn_colnames:3, btwn_col1:10, btwn_col2:10,
+var dim_col = { w_col:(w_svg-margin.left-margin.right)/3, w_names:105, btwn_colnames:3, btwn_col1:5, btwn_col2:5,
   w_colmin: 60,
   h_col:13, h_btwn:5,
   top:30, left:5 }
@@ -27,7 +26,12 @@ var breakline, group420, group450, group1200, group420enter, group450enter, grou
 var barColor = d3.color("#f6bba8");
 var highlightBarColor = d3.rgb(79,39,79);
 var light_gray = d3.rgb(200,200,200);
+var dark_gray = d3.rgb(100,100,100);
 var gray = d3.color("#a19da8");
+var green = d3.rgb(196,202,138);
+var dark_green = d3.rgb(112,118,54);
+var red = d3.rgb(227,128,115);
+var dark_red = d3.rgb(143,44,28);
 
 // Function that create subsets
 var getSortedDataset = function(dataset, metric, gameMode, sort) { // input metric and gameMode; output sorted dataset ready to go in elements
@@ -95,7 +99,7 @@ d3.csv('data/champion_stats_by_queue.csv', rowConverter, function(data) {
                       .domain([d3.min(dataset, function(d) { return d.ngames; }), d3.max(dataset, function(d) { return d.ngames})])
                       .range([1, dim_col.w_col - dim_col.w_names - dim_col.btwn_colnames]);
   var xScale_win = d3.scaleLinear()
-                      .domain([0.2, 0.8])
+                      .domain([0.32, 0.7])
                       .range([1, dim_col.w_col - dim_col.w_names - dim_col.btwn_colnames]);
 
   // Create column groups
@@ -216,9 +220,9 @@ d3.csv('data/champion_stats_by_queue.csv', rowConverter, function(data) {
             }
           })
           .attr("y", function(d,i) {
-            return (dim_col.h_col+dim_col.h_btwn)*i + dim_col.h_col/2-3;
+            return (dim_col.h_col+dim_col.h_btwn)*i + dim_col.h_col/2-1;
           })
-          .attr("height", 6)
+          .attr("height", 2)
           .attr("width", function(d) {
             return Math.abs(xScale_win(d.nwins/d.ngames)-xScale_win(.5));
           })
@@ -231,7 +235,7 @@ d3.csv('data/champion_stats_by_queue.csv', rowConverter, function(data) {
           .attr("cy", function(d,i) {
             return (dim_col.h_col+dim_col.h_btwn)*i + dim_col.h_col/2;
           })
-          .attr("r", 5)
+          .attr("r", 3)
           .style("fill", "none");
 
   // 450 ARAM
@@ -301,9 +305,9 @@ d3.csv('data/champion_stats_by_queue.csv', rowConverter, function(data) {
             }
           })
           .attr("y", function(d,i) {
-            return (dim_col.h_col+dim_col.h_btwn)*i + dim_col.h_col/2-3;
+            return (dim_col.h_col+dim_col.h_btwn)*i + dim_col.h_col/2-1;
           })
-          .attr("height", 6)
+          .attr("height", 2)
           .attr("width", function(d) {
             return Math.abs(xScale_win(d.nwins/d.ngames)-xScale_win(.5));
           })
@@ -316,7 +320,7 @@ d3.csv('data/champion_stats_by_queue.csv', rowConverter, function(data) {
           .attr("cy", function(d,i) {
             return (dim_col.h_col+dim_col.h_btwn)*i + dim_col.h_col/2;
           })
-          .attr("r", 5)
+          .attr("r", 3)
           .style("fill", "none");
 
   // 1200 Nexus Blitz
@@ -386,9 +390,9 @@ d3.csv('data/champion_stats_by_queue.csv', rowConverter, function(data) {
             }
           })
           .attr("y", function(d,i) {
-            return (dim_col.h_col+dim_col.h_btwn)*i + dim_col.h_col/2-3;
+            return (dim_col.h_col+dim_col.h_btwn)*i + dim_col.h_col/2-1;
           })
-          .attr("height", 6)
+          .attr("height", 2)
           .attr("width", function(d) {
             return Math.abs(xScale_win(d.nwins/d.ngames)-xScale_win(.5));
           })
@@ -401,7 +405,7 @@ d3.csv('data/champion_stats_by_queue.csv', rowConverter, function(data) {
             .attr("cy", function(d,i) {
               return (dim_col.h_col+dim_col.h_btwn)*i + dim_col.h_col/2;
             })
-            .attr("r", 5)
+            .attr("r", 3)
             .style("fill", "none");
 
   // Create 50% lines for dot plots
