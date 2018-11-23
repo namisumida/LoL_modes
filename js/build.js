@@ -381,7 +381,7 @@ d3.csv('data/champion_stats_by_queue.csv', rowConverter, function(data) {
           .attr("cy", function(d,i) {
             return (dim_col.h_col+dim_col.h_btwn)*i + dim_col.h_col/2;
           })
-          .attr("r", 3)
+          .attr("r", 4)
           .style("fill", "none");
   group450.append("circle")
           .attr("class", "dot")
@@ -391,7 +391,7 @@ d3.csv('data/champion_stats_by_queue.csv', rowConverter, function(data) {
           .attr("cy", function(d,i) {
             return (dim_col.h_col+dim_col.h_btwn)*i + dim_col.h_col/2;
           })
-          .attr("r", 3)
+          .attr("r", 4)
           .style("fill", "none");
   group1200.append("circle")
             .attr("class", "dot")
@@ -401,7 +401,7 @@ d3.csv('data/champion_stats_by_queue.csv', rowConverter, function(data) {
             .attr("cy", function(d,i) {
               return (dim_col.h_col+dim_col.h_btwn)*i + dim_col.h_col/2;
             })
-            .attr("r", 3)
+            .attr("r", 4)
             .style("fill", "none");
 
   // Create 50% lines for dot plots

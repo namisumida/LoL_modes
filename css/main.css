@@ -1,6 +1,9 @@
 body,html {
 }
-
+@font-face {
+  font-family: radnika-black;
+  src: url("fonts/Radnika-Black.otf");
+}
 @font-face {
   font-family: radnika-bold;
   src: url("fonts/Radnika-Bold.otf");
@@ -12,10 +15,6 @@ body,html {
 @font-face {
   font-family: radnika-condensed;
   src: url("fonts/Radnika-Condensed.otf");
-}
-@font-face {
-  font-family: radnika-boldcondensed;
-  src: url("fonts/radnika-boldcondensed.otf");
 }
 @font-face {
   font-family: radnika-medium;
@@ -30,14 +29,19 @@ body,html {
   position: relative;
   margin: 0 auto;
   min-width: 430px;
-  max-width: 550px;
+  max-width: 650px;
   margin-top: 50px;
 }
 h1 {
-  font-family: radnika-boldcondensed;
-  font-size: 25px;
+  font-family: radnika-black;
+  font-size: 30px;
   text-align: center;
   margin: 0;
+}
+h3 {
+  font-family: radnika-medium;
+  font-size: 14px;
+  text-align: center;
 }
 #title-line {
   stroke-width: 2;

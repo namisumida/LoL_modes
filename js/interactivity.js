@@ -458,7 +458,7 @@ d3.csv('data/champion_stats_by_queue.csv', rowConverter, function(data) {
                   .attr("cy", function(d,i) {
                     return (dim_col.h_col+dim_col.h_btwn)*i + dim_col.h_col/2;
                   })
-                  .attr("r", 3)
+                  .attr("r", 4)
                   .style("fill", function(d) {
                     var winRate = +(d.nwins/d.ngames).toFixed(2);
                     if (winRate > .5) { return green; }
@@ -473,7 +473,7 @@ d3.csv('data/champion_stats_by_queue.csv', rowConverter, function(data) {
                   .attr("cy", function(d,i) {
                     return (dim_col.h_col+dim_col.h_btwn)*i + dim_col.h_col/2;
                   })
-                  .attr("r", 3)
+                  .attr("r", 4)
                   .style("fill", function(d) {
                     var winRate = +(d.nwins/d.ngames).toFixed(2);
                     if (winRate > .5) { return green; }
@@ -488,7 +488,7 @@ d3.csv('data/champion_stats_by_queue.csv', rowConverter, function(data) {
                   .attr("cy", function(d,i) {
                     return (dim_col.h_col+dim_col.h_btwn)*i + dim_col.h_col/2;
                   })
-                  .attr("r", 3)
+                  .attr("r", 4)
                   .style("fill", function(d) {
                     var winRate = +(d.nwins/d.ngames).toFixed(2);
                     if (winRate > .5) { return green; }
