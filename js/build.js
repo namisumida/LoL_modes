@@ -30,7 +30,7 @@ var dark_gray = d3.rgb(100,100,100);
 var gray = d3.color("#a19da8");
 var green = d3.rgb(0,150,0);
 var dark_green = d3.rgb(0,200,0);
-var red = d3.rgb(227,128,115);
+var red = d3.rgb(212,89,84);
 var dark_red = d3.rgb(320,44,28);
 
 // Function that create subsets

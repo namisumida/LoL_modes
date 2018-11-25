@@ -30,7 +30,7 @@ body,html {
   margin: 0 auto;
   min-width: 430px;
   max-width: 650px;
-  margin-top: 50px;
+  margin-top: 30px;
 }
 h1 {
   font-family: radnika-black;
@@ -52,7 +52,9 @@ h3 {
   margin: 0 auto;
   min-width: 430px;
   max-width: 550px;
-  margin-top: 20px;
+  margin-top: 10px;
+}
+#container-options {
   height: 60px;
 }
 #container-options-metrics {
@@ -80,7 +82,17 @@ h3 {
   margin-right: 10px;
   float: left;
 }
-
+#instructions {
+  position: relative;
+  margin: 0 auto;
+  margin-left: 10px;
+  margin-top: 10px;
+}
+p {
+  font-family: radnika-regular;
+  font-size: 13px;
+  text-align: left;
+}
 h5 {
   margin: 8px;
   color: #a19da8;
@@ -98,6 +110,7 @@ button {
   color: #a19da8;
   border: 1.5px solid #a19da8;
   font-family: stratum-medium;
+  cursor: pointer;
 }
 button:focus {
   background-color: #a19da8;
@@ -131,7 +144,7 @@ button:focus {
   margin: 0 auto;
   height: 2630px;
   width: 800px;
-  margin-top: 20px;
+  margin-top: 25px;
 }
 .midline {
   stroke-width: 2;
@@ -151,19 +164,17 @@ button:focus {
 .dotDistance {
   opacity: 0.5;
 }
-
 .nameLabel {
   font-size: 12px;
   text-anchor: end;
   font-family: radnika-regular;
+  cursor: pointer;
 }
-
 .countLabel {
   font-size: 12px;
   fill: none;
   font-family: stratum-medium;
 }
-
 .rankLabel {
   font-size: 12px;
   fill:none;
@@ -171,16 +182,19 @@ button:focus {
   text-anchor: end;
   font-family: radnika-condensed;
 }
-
 .midline_label {
   font-family: radnika-regular;
 }
-
 .breakline {
   stroke: gray;
   stroke-width: 0.1;
 }
-
 .background {
   fill: white;
+}
+.bar {
+  cursor: pointer;
+}
+.dot {
+  cursor: pointer;
 }
