@@ -98,7 +98,7 @@ var updateButton = function(button) {
   var value = button._groups[0][0].value;
 
   // change button to selected styles
-  button.style("background-color", d3.color("#a19da8"))
+  button.style("background-color", d3.rgb(79,39,79))
         .style("color", "white");
 
   // change text for the count sorting label to play count
