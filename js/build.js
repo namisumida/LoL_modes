@@ -1,296 +1,395 @@
-var svg = d3.select("#svg-barchart");
-var w_svg = document.getElementById('svg-barchart').getBoundingClientRect().width; // get width and height based on window size
-var n_champion = 141;
+var svg = d3.select("#graphic-svg");
+var w_svg = document.getElementById("graphic-svg").getBoundingClientRect().width;
+var margin = { left: 5, right: 40, top: 60, bottom: 0 }
+var graphicMargin = { w:(w_svg-margin.left-margin.right), w_names:90, btwn_names:15, h_col:13, h_btwn:5 };
+var w_dotLine = graphicMargin.w-graphicMargin.w_names-graphicMargin.btwn_names;
 
-// Layout
-var margin = { top:30, bottom:10, left:0, right:40 };
-
-// Dimensions for column sections
-var dim_col = { w_col:(w_svg-margin.left-margin.right)/3, w_names:105, btwn_colnames:3, btwn_col1:5, btwn_col2:5,
-  w_colmin: 60,
-  h_col:13, h_btwn:5,
-  top:30, left:5 }
-var w_bars = dim_col.w_col - dim_col.left - dim_col.w_names - dim_col.btwn_col1 - dim_col.btwn_col2;
-
-// Saving datasets
-var orig_dataset; // original dataset
-var dataset_threemodes; // dataset with the three game modes
-var dataset; // dataset that changes based on filters
-var metric, sort, xScale_play, xScale_win;
-
-// Defining groups
-var breakline, group420, group450, group1200, group420enter, group450enter, group1200enter;
-
-// Colors
-var barColor = d3.color("#f6bba8");
-var highlightBarColor = d3.rgb(79,39,79);
-var light_gray = d3.rgb(200,200,200);
-var dark_gray = d3.rgb(100,100,100);
-var gray = d3.color("#a19da8");
-var green = d3.rgb(0,150,0);
-var dark_green = d3.rgb(0,200,0);
-var red = d3.rgb(212,89,84);
-var dark_red = d3.rgb(320,44,28);
-
+// Datasets
 var rowConverter = function(d) {
   return {
-    champion: d.champion,
-    queueid: parseInt(d.queueid),
-    ngames: parseInt(d.ngames),
-    nwins: parseInt(d.nwins),
-    nkills: parseInt(d.nkills),
-    ndeaths: parseInt(d.ndeaths),
-    nassists: parseInt(d.nassists),
-    totalminionskilled: parseInt(d.totalminionskilled),
-    neutralminionskilled: parseInt(d.neutralminionskilled),
-    avgdamagedealtchampions: parseInt(d.avgdamagedealtchampions),
-    role: d.role,
-    broad_role: d.broad_role
-  };
-}; // end row converter
+    champ1: d.champ1,
+    champ2: d.champ2,
+    winrate: parseFloat(d.winrate),
+    n_games: parseInt(d.n_games)
+  }
+};
 
-d3.csv('data/champion_stats_by_queue.csv', rowConverter, function(data) {
+// Scale
+var xScale_win = d3.scaleLinear()
+                   .domain([0,1])
+                   .range([80, w_dotLine]);
 
-  // Datasets
-  orig_dataset = data;
-  dataset_threemodes = data.filter(function(d) {
-                          return d.queueid!=470;
-                        }); // save data that doesn't include the 470 mode
-  dataset = dataset_threemodes; // default dataset - showing all champions
+// Slider
+var sliderValue = parseInt(d3.select(".slider").node().value);
 
-  // Scale functions
-  xScale_play = d3.scaleLinear()
-                  .domain([d3.min(dataset, function(d) { return d.ngames; }), d3.max(dataset, function(d) { return d.ngames})])
-                  .range([1, dim_col.w_col - dim_col.w_names - dim_col.btwn_colnames]);
-  xScale_win = d3.scaleLinear()
-                  .domain([0.32, 0.7])
-                  .range([1, dim_col.w_col - dim_col.w_names - dim_col.btwn_colnames]);
+// Text wrap function
+function wrap(text, width) {
+  text.each(function () {
+    var text = d3.select(this),
+        words = text.text().split(/\s+/).reverse(),
+        word,
+        line = [],
+        lineNumber = 0,
+        lineHeight = 1.3, // ems
+        x = text.attr("x"),
+        y = text.attr("y"),
+        dy = 0, //parseFloat(text.attr("dy")),
+        tspan = text.text(null)
+                    .append("tspan")
+                    .attr("x", x)
+                    .attr("y", y)
+                    .attr("dy", dy + "em");
+    while (word = words.pop()) {
+        line.push(word);
+        tspan.text(line.join(" "));
+        if (tspan.node().getComputedTextLength() > width) {
+            line.pop();
+            tspan.text(line.join(" "));
+            line = [word];
+            tspan = text.append("tspan")
+                        .attr("x", x)
+                        .attr("y", y)
+                        .attr("dy", ++lineNumber * lineHeight + dy + "em")
+                        .text(word);
+        }
+    }
+  });
+}; // end wrap function
 
-  // Base elements
-  // Create column groups
-  var col1 = svg.append("g") // make a group element
-                .attr("class", "column")
-                .attr("id", "col1")
-                .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-  // Second column - ARAM; 1200
-  var col2 = svg.append("g") // make a group element
-                .attr("class", "column")
-                .attr("transform", "translate(" + (margin.left+dim_col.w_col+dim_col.btwn_col1) + "," + margin.top + ")");
-  // Third column - Nexus Blitz; 450
-  var col3 = svg.append("g") // make a group element
-                .attr("class", "column")
-                .attr("transform", "translate(" + (margin.left+dim_col.w_col*2+dim_col.btwn_col1+dim_col.btwn_col2) + "," + margin.top + ")");
+function wrapChampion(text) {
+  text.each(function () {
+    var text = d3.select(this),
+        words = text.text().split(/\s+/).reverse(),
+        word,
+        line = [],
+        lineNumber = 0,
+        lineHeight = 1.3, // ems
+        x = text.attr("x"),
+        y = text.attr("y"),
+        dy = 0, //parseFloat(text.attr("dy")),
+        tspan = text.text(null)
+                    .append("tspan")
+                    .attr("x", x)
+                    .attr("y", y)
+                    .attr("dy", dy + "em");
+    var champNameLength = tspan.text(currChampionName + "'s").node().getComputedTextLength();
+    if (champNameLength < 45) {
+      var width = 45;
+    }
+    else { var width = champNameLength; }
+    while (word = words.pop()) {
+        line.push(word);
+        tspan.text(line.join(" "));
+        if (tspan.node().getComputedTextLength() > width) {
+            line.pop();
+            tspan.text(line.join(" "));
+            line = [word];
+            tspan = text.append("tspan")
+                        .attr("x", x)
+                        .attr("y", y)
+                        .attr("dy", ++lineNumber * lineHeight + dy + "em")
+                        .text(word);
+        }
+    }
+  });
+}; // end wrap function
 
-  // Create labels
-  col1.append("text")
-      .attr("class", "mode_label")
-      .attr("x", dim_col.w_col/2)
-      .attr("y", 0)
-      .text("Nexus Blitz");
-  col2.append("text")
-      .attr("class", "mode_label")
-      .attr("x", dim_col.w_col/2)
-      .attr("y", 0)
-      .text("Ranked 5v5");
-  col3.append("text")
-      .attr("class", "mode_label")
-      .attr("x", dim_col.w_col/2)
-      .attr("y", 0)
-      .text("ARAM");
+// Colors
+var green = "green";
+var red = d3.rgb(212,89,84);
+var gray = d3.color("#a19da8");
+var dark_gray = d3.rgb(100,100,100);
+var dotColor = d3.color("#f6bba8");
+var highlightColor = d3.rgb(79,39,79);
+var light_gray = d3.rgb(200,200,200);
 
-  // Create all the groups
-  group420 = col2.selectAll("group420")
-                  .data(getSortedDataset(dataset, metric, 420, sort))
-                  .enter()
-                  .append("g")
-                  .attr("class", "champion_group")
-                  .attr("transform", "translate(0," + dim_col.top + ")");
-  group450 = col3.selectAll("group450")
-                 .data(getSortedDataset(dataset, metric, 450, sort))
-                 .enter()
-                 .append("g")
-                 .attr("class", "champion_group")
-                 .attr("transform", "translate(0," + dim_col.top + ")");
-  group1200 = col1.selectAll("group1200")
-                   .data(getSortedDataset(dataset, metric, 1200, sort))
+function setup() {
+    // Initial setting
+    sort = "win";
+    updateChampion("Nunu");
+    updateData();
+
+   // Create base elements
+   svg.append("line")
+       .attr("class", "midline")
+       .attr("x1", graphicMargin.w_names+graphicMargin.btwn_names+xScale_win(currAvg))
+       .attr("x2", graphicMargin.w_names+graphicMargin.btwn_names+xScale_win(currAvg))
+       .attr("y1", margin.top)
+       .attr("y2", margin.top + (graphicMargin.h_col + graphicMargin.h_btwn)*(nPairs-1) + graphicMargin.h_col/2)
+       .style("stroke", gray);
+   svg.append("text")
+      .text("Paired with...")
+      .attr("x", graphicMargin.w_names)
+      .attr("y", margin.top-25)
+      .attr("class", "dataLabel")
+      .attr("id", "nameDataLabel")
+      .call(wrap, 50)
+      .style("text-anchor", "end");
+   svg.append("text")
+      .text("# of games played")
+      .attr("x", graphicMargin.w_names + graphicMargin.btwn_names)
+      .attr("y", margin.top-25)
+      .attr("class", "dataLabel")
+      .attr("id", "nGamesDataLabel")
+      .style("text-anchor", "start")
+      .call(wrap, 80);
+   svg.append("text")
+      .text(currChampionName + "'s win rate")
+      .attr("x", graphicMargin.w_names+graphicMargin.btwn_names+xScale_win(currAvg))
+      .attr("y", margin.top-25)
+      .attr("class", "dataLabel")
+      .attr("id", "avgDataLabel")
+      .call(wrapChampion);
+   svg.append("text")
+      .text("Paired win rate")
+      .attr("x", graphicMargin.w_names+graphicMargin.btwn_names+xScale_win(+champ_subset[0].winrate.toFixed(2)))
+      .attr("y", margin.top-25)
+      .attr("class", "dataLabel")
+      .attr("id", "pairDataLabel")
+      .call(wrap, 50);
+   // Pairs
+   pairGroup = svg.selectAll("pairGroup")
+                   .data(champ_subset)
                    .enter()
                    .append("g")
-                   .attr("class", "champion_group")
-                   .attr("transform", "translate(0," + dim_col.top + ")");
-
-  // Create white backgrounds
-  group420.append("rect") // to allow clickability between name and rect
-           .attr("class", "background")
-           .attr("x", 0)
-           .attr("width", dim_col.w_col)
-           .attr("height", dim_col.h_col);
-  group450.append("rect") // to allow clickability between name and rect
-           .attr("class", "background")
-           .attr("x", 0)
-           .attr("width", dim_col.w_col)
-           .attr("height", dim_col.h_col);
-  group1200.append("rect") // to allow clickability between name and rect
-           .attr("class", "background")
-           .attr("x", 0)
-           .attr("width", dim_col.w_col)
-           .attr("height", dim_col.h_col);
-
-   // Create 50% midline label
-   svg.selectAll(".column").append("text")
-       .attr("class", "numline_label")
-       .attr("x", dim_col.left+dim_col.w_names + xScale_win(.5))
-       .attr("y", 23)
-       .text("50%")
-       .style("fill", "none");
-
-  // Name labels
-  group420.append("text") // champion names
-          .attr("class", "nameLabel")
-          .attr("x", dim_col.w_names-dim_col.btwn_colnames);
-  group450.append("text") // champion names
-          .attr("class", "nameLabel")
-          .attr("x", dim_col.w_names-dim_col.btwn_colnames);
-  group1200.append("text") // champion names
-          .attr("class", "nameLabel")
-          .attr("x", dim_col.w_names-dim_col.btwn_colnames);
-
-  // Bars
-  group420.append("rect") // bars
-          .attr("class", "bar")
-          .attr("x", dim_col.left+dim_col.w_names)
-          .attr("height", dim_col.h_col)
-          .style("fill", barColor);
-  group450.append("rect") // bars
-          .attr("class", "bar")
-          .attr("x", dim_col.left+dim_col.w_names)
-          .attr("height", dim_col.h_col)
-          .style("fill", barColor);
-  group1200.append("rect") // bars
-          .attr("class", "bar")
-          .attr("x", dim_col.left+dim_col.w_names)
-          .attr("height", dim_col.h_col)
-          .style("fill", barColor);
-
-  // Dot distance
-  group420.append("rect")
-          .attr("class", "dotDistance")
-          .attr("height", 2)
-          .style("fill", "none");
-  group450.append("rect")
-          .attr("class", "dotDistance")
-          .attr("height", 2)
-          .style("fill", "none");
-  group1200.append("rect")
-          .attr("class", "dotDistance")
-          .attr("height", 2)
-          .style("fill", "none");
-
-  // Dots
-  group420.append("circle")
-          .attr("class", "dot")
-          .attr("r", 4)
-          .style("fill", "none");
-  group450.append("circle")
-          .attr("class", "dot")
-          .attr("r", 4)
-          .style("fill", "none");
-  group1200.append("circle")
-            .attr("class", "dot")
+                   .attr("class", "pairGroup")
+                   .attr("transform", "translate(0," + margin.top + ")");
+   dotGroup = pairGroup.append("g")
+                       .attr("class", "dotGroup");
+   nameGroup = pairGroup.append("g")
+                        .attr("class", "nameGroup");
+   dotGroup.append("rect") // to allow clickability between name and rect
+            .attr("class", "background")
+            .attr("id", "dotBackground")
+            .attr("x", graphicMargin.w_names)
+            .attr("y", function(d,i) {
+             return (graphicMargin.h_col+graphicMargin.h_btwn)*i;
+            })
+            .attr("width", w_dotLine+graphicMargin.btwn_names+margin.right)
+            .attr("height", graphicMargin.h_col);
+   dotGroup.append("rect")
+            .attr("class", "pairBar")
+            .attr("width", function(d) {
+              return xScale_play(d.n_games);
+            })
+            .attr("height", graphicMargin.h_col)
+            .attr("x", graphicMargin.w_names + graphicMargin.btwn_names)
+            .attr("y", function(d,i) {
+              return (graphicMargin.h_col+graphicMargin.h_btwn)*i;
+            })
+            .style("fill", light_gray)
+            .style("opacity", 0.3);
+   nameGroup.append("rect")
+            .attr("class", "background")
+            .attr("id", "nameBackground")
+            .attr("x", 0)
+            .attr("y", function(d,i) {
+             return (graphicMargin.h_col+graphicMargin.h_btwn)*i;
+            })
+            .attr("width", graphicMargin.w_names)
+            .attr("height", graphicMargin.h_col);
+   nameGroup.append("text")
+            .attr("class", "pairNameText")
+            .text(function(d) {
+              return "+ " + d.champ2;
+            })
+            .attr("x", graphicMargin.w_names)
+            .attr("y", function(d,i) {
+              return (graphicMargin.h_col+graphicMargin.h_btwn)*i + graphicMargin.h_col/2 +3;
+            });
+   dotGroup.append("rect")
+             .attr("class", "dotDistance")
+             .attr("x", function(d) {
+               var winRate = +(d.winrate).toFixed(2)
+               if (winRate > currAvg) {
+                 return graphicMargin.w_names+graphicMargin.btwn_names+xScale_win(currAvg);
+               }
+               else {
+                 return graphicMargin.w_names+graphicMargin.btwn_names+xScale_win(+(winRate).toFixed(2));
+               }
+             })
+             .attr("y", function(d,i) {
+               return (graphicMargin.h_col+graphicMargin.h_btwn)*i + graphicMargin.h_col/2-1;
+             })
+             .attr("height", 2)
+             .attr("width", function(d) {
+               return Math.abs(xScale_win(+(d.winrate).toFixed(2))-xScale_win(currAvg));
+             });
+   dotGroup.append("circle") // average dot
+            .attr("class", "avgDot")
+            .attr("cx", function(d) {
+              return graphicMargin.w_names+graphicMargin.btwn_names+xScale_win(currAvg);
+            })
+            .attr("cy", function(d,i) {
+              return (graphicMargin.h_col+graphicMargin.h_btwn)*i + graphicMargin.h_col/2;
+            })
             .attr("r", 4)
+            .style("fill", highlightColor);
+   dotGroup.append("circle") // pair dot
+            .attr("class", "pairDot")
+            .attr("cx", function(d) {
+              return graphicMargin.w_names+graphicMargin.btwn_names+xScale_win(+(d.winrate).toFixed(2));
+            })
+            .attr("cy", function(d,i) {
+              return (graphicMargin.h_col+graphicMargin.h_btwn)*i + graphicMargin.h_col/2;
+            })
+            .attr("r", 4)
+            .style("fill", function(d) {
+              var roundedWin = +(d.winrate).toFixed(2);
+              if (roundedWin > currAvg) {
+                return green;
+              }
+              else if (roundedWin < currAvg) {
+                return red;
+              }
+              else {
+                return dark_gray;
+              }
+            });
+   dotGroup.append("text")
+            .attr("class", "countLabel")
+            .attr("id", "gamesCountLabel")
+            .attr("x", graphicMargin.w_names + graphicMargin.btwn_names + 5)
+            .attr("y", function(d,i) {
+              return (graphicMargin.h_col+graphicMargin.h_btwn)*i + graphicMargin.h_col/2 +4;
+            })
+            .text(function(d) {
+              return d3.format(",")(d.n_games);
+            })
+            .style("text-anchor", "start")
             .style("fill", "none");
+   dotGroup.append("text")
+            .attr("class", "countLabel")
+            .attr("id", "avgCountLabel")
+            .attr("x", function(d) {
+              if (+(d.winrate).toFixed(2) > currAvg) {
+                return graphicMargin.w_names+graphicMargin.btwn_names+xScale_win(currAvg) - 8;
+              }
+              else { return graphicMargin.w_names+graphicMargin.btwn_names+xScale_win(currAvg) + 8; };
+            })
+            .attr("y", function(d,i) {
+              return (graphicMargin.h_col+graphicMargin.h_btwn)*i + graphicMargin.h_col/2 +4;
+            })
+            .text(function(d) {
+              return d3.format(".0%")(currAvg);
+            })
+            .style("text-anchor", function(d) {
+              if (+(d.winrate).toFixed(2) > currAvg) {
+                return "end";
+              }
+              else { return "start"; };
+            })
+            .style("fill", "none");
+   dotGroup.append("text")
+            .attr("class", "countLabel")
+            .attr("id", "pairCountLabel")
+            .attr("x", function(d) {
+              var roundedWin = +(d.winrate).toFixed(2);
+              if (roundedWin > currAvg) {
+                return graphicMargin.w_names+graphicMargin.btwn_names+xScale_win(roundedWin) + 8;
+              }
+              else { return graphicMargin.w_names+graphicMargin.btwn_names+xScale_win(roundedWin) - 8; };
+            })
+            .attr("y", function(d,i) {
+              return (graphicMargin.h_col+graphicMargin.h_btwn)*i + graphicMargin.h_col/2 +4;
+            })
+            .text(function(d) {
+              return d3.format(".0%")(d.winrate);
+            })
+            .style("text-anchor", function(d) {
+              if (+(d.winrate).toFixed(2) > currAvg) {
+                return "start";
+              }
+              else { return "end"; };
+            })
+            .style("fill", "none");
+    // Create line breaks
+    var breakline_g = svg.append("g").attr("id", "breakline_g");
+    breakline_g.selectAll("breakline")
+                .data(champ_subset.filter(function(d,i) {
+                  return (i+1)%5==0;
+                })) // this can be any mode, but should be based on the metric
+                .enter()
+                .append("line")
+                .attr("class", "breakline")
+                .attr("x1", 0)
+                .attr("x2", w_svg)
+                .attr("y1", function(d,i) {
+                  return margin.top + (graphicMargin.h_col+graphicMargin.h_btwn)*(i)*5 - graphicMargin.h_btwn/2;
+                })
+                .attr("y2", function(d,i) {
+                  return margin.top + (graphicMargin.h_col+graphicMargin.h_btwn)*(i)*5 - graphicMargin.h_btwn/2;
+                });
 
-  // Count labels
-  group420.append("text")
-          .attr("class", "countLabel");
-  group450.append("text") // count labels
-          .attr("class", "countLabel");
-  group1200.append("text") // count labels
-           .attr("class", "countLabel");
+    updateClick();
+    updateSizing();
+}; // end set up function
 
-  // Create 50% lines for dot plots
-  var currentHeight = d3.select("#col1").node().getBBox().height;
-  svg.append("line")
-      .attr("class", "midline")
-      .attr("x1", margin.left + dim_col.left+dim_col.w_names + xScale_win(.5))
-      .attr("x2", margin.left + dim_col.left+dim_col.w_names + xScale_win(.5))
-      .attr("y1", margin.top + 28)
-      .attr("y2", margin.top + currentHeight + 18)
-      .style("stroke", "none");
-  svg.append("line")
-      .attr("class", "midline")
-      .attr("x1", (margin.left+dim_col.w_col+dim_col.btwn_col1) + dim_col.left+dim_col.w_names + xScale_win(.5))
-      .attr("x2", (margin.left+dim_col.w_col+dim_col.btwn_col1) + dim_col.left+dim_col.w_names + xScale_win(.5))
-      .attr("y1", margin.top + 28)
-      .attr("y2", margin.top + currentHeight + 18)
-      .style("stroke", "none");
-  svg.append("line")
-      .attr("class", "midline")
-      .attr("x1", margin.left+dim_col.w_col*2+dim_col.btwn_col1+dim_col.btwn_col2 + dim_col.left+dim_col.w_names + xScale_win(.5))
-      .attr("x2", margin.left+dim_col.w_col*2+dim_col.btwn_col1+dim_col.btwn_col2 + dim_col.left+dim_col.w_names + xScale_win(.5))
-      .attr("y1", margin.top + 28)
-      .attr("y2", margin.top + currentHeight + 18)
-      .style("stroke", "none");
+// Import data
+var dataset;
+d3.csv('data/jungler_pair_long.csv', rowConverter, function(data) {
+   // Data
+   dataset = data;
 
-  // Create line breaks
-  var breakline_g = svg.append("g").attr("id", "breakline_g");
-  breakline = breakline_g.selectAll("breakline")
-                          .data(getSortedDataset(dataset, metric, 1200, sort).filter(function(d,i) {
-                            return (i+1)%5==0;
-                          })) // this can be any mode, but should be based on the metric
-                          .enter()
-                          .append("line")
-                          .attr("class", "breakline")
-                          .attr("x1", 0)
-                          .attr("x2", w_svg-margin.left-margin.right)
-                          .attr("y1", function(d,i) {
-                            return margin.top + dim_col.top + (dim_col.h_col+dim_col.h_btwn)*(i+1)*5 - dim_col.h_btwn/2;
-                          })
-                          .attr("y2", function(d,i) {
-                            return margin.top + dim_col.top + (dim_col.h_col+dim_col.h_btwn)*(i+1)*5 - dim_col.h_btwn/2;
-                          });
+   init();
 
-  // Initial settings
-  metric = "play";
-  sort = "count";
-  updateBarsDots(dataset, sort, metric);
-
-  // If metrics are changed
-  d3.select("#button-win").on("click", function() {
-    metric = "win";
-    updateButton(d3.select(this));
-    updateBarsDots(dataset, sort, metric);
-  });
-  d3.select("#button-play").on("click", function() {
-    metric = "play";
-    updateButton(d3.select(this));
-    updateBarsDots(dataset, sort, metric);
-  }) // end metric changes
-
-  // If sorting is changed
-  d3.select("#button-count").on("click", function() {
-    sort = "count";
-    updateButton(d3.select(this));
-    updateBarsDots(dataset, sort, metric);
-
-  });
+  // INTERACTIVITY
+  // Sorting - buttons
   d3.select("#button-alpha").on("click", function() {
     sort = "alpha";
     updateButton(d3.select(this));
-    updateBarsDots(dataset, sort, metric);
+    updateData();
+    updateGraphic();
+  }); // end sorting changes
+  d3.select("#button-win").on("click", function() {
+    sort = "win";
+    updateButton(d3.select(this));
+    updateData();
+    updateGraphic();
+  }); // end sorting changes
+  d3.select("#button-play").on("click", function() {
+    sort = "play";
+    updateButton(d3.select(this));
+    updateData();
+    updateGraphic();
   }); // end sorting changes
 
-  // If filtering by champion
-  d3.select("#filter-class").on("change", function() {
-    var filterSelection = d3.select(this).node().value; //selection value
-    if (filterSelection == "all") {
-      dataset = dataset_threemodes;
-    }
-    else {
-      dataset = dataset_threemodes.filter(function(d) {
-        return d.broad_role == filterSelection;
-      })
-    }
-    updateButton(d3.select(this));
-    updateBarsDots(dataset, sort, metric);
-  }); // end changing filter-class
-}) // end d3.csv()
+  // Slider
+  d3.select(".slider").on("input", function() {
+    // update slider display
+    sliderValue = parseInt(d3.select(this).node().value);
+    document.getElementById("slider-instructions").innerHTML = "Show pairs with at least " + d3.format(",")(sliderValue) + " games played:";
+
+    updateData();
+    updateGraphic();
+  }); // end on change slider function
+
+  // Search bar
+  // champion names for search bar
+  var championNameList = [];
+  for (var i=0; i<(avg_data.length); i++) { // get a list of all champions
+    championNameList.push(avg_data[i].champ);
+  }; // end for loop
+  autocomplete(document.getElementById("searchbar"), championNameList); // autocomplete function
+
+}); // end d3.csv function
+
+// Resizing 
+function resize() {
+  // Get width and update scales/margins/sizes
+  w_svg = document.getElementById("graphic-svg").getBoundingClientRect().width;
+  graphicMargin = { w:(w_svg-margin.left-margin.right), w_names:90, btwn_names:15, h_col:13, h_btwn:5 };
+  w_dotLine = graphicMargin.w-graphicMargin.w_names-graphicMargin.btwn_names;
+  xScale_win = d3.scaleLinear()
+                     .domain([0,1])
+                     .range([80, w_dotLine]);
+  updateGraphic();
+}; // end resize function
+
+function init() {
+  // call setup once on page load
+  setup();
+
+  // setup event listener to handle window resize
+  window.addEventListener('resize', resize);
+}; // end init function
