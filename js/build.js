@@ -388,7 +388,7 @@ function resize() {
 
 function init() {
   // call setup once on page load
-  setup();
+  init();
 
   // setup event listener to handle window resize
   window.addEventListener('resize', resize);
