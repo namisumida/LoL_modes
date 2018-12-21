@@ -295,11 +295,104 @@ function setup() {
 
   // Count labels
   group420.append("text")
-          .attr("class", "countLabel");
+          .attr("class", "countLabel")
+          .attr("x", function(d) {
+            if (metric=="play") {
+              if (xScale_play(d.ngames) <= dim_col.w_colmin) {
+                return dim_col.left+dim_col.w_names + xScale_play(d.ngames) + 3;
+              }
+              else { return dim_col.left+dim_col.w_names + xScale_play(d.ngames) - 5;}
+            }
+            else {
+             if (d.nwins/d.ngames >= .5) {
+               return dim_col.left+dim_col.w_names + xScale_win(0.5) - 8;
+             }
+             else { return dim_col.left+dim_col.w_names + xScale_win(0.5) + 8; };
+            }
+          })
+          .attr("y", function(d,i) {
+            return (dim_col.h_col+dim_col.h_btwn)*i + dim_col.h_col/2 +4;
+          })
+          .text(function(d) {
+            if (metric=="play") { return d3.format(",")(d.ngames); }
+            else { return d3.format(".0%")(d.nwins/d.ngames); }
+          })
+          .style("text-anchor", function(d) {
+            if (metric=="play") {
+              if (xScale_play(d.ngames) <= dim_col.w_colmin) { return "start"; }
+              else { return "end";}
+            }
+            else {
+              if (d.nwins/d.ngames >= .5) { return "end"; }
+              else { return "start"; }
+            }
+          });
   group450.append("text") // count labels
-          .attr("class", "countLabel");
+          .attr("class", "countLabel")
+          .attr("x", function(d) {
+            if (metric=="play") {
+              if (xScale_play(d.ngames) <= dim_col.w_colmin) {
+                return dim_col.left+dim_col.w_names + xScale_play(d.ngames) + 3;
+              }
+              else { return dim_col.left+dim_col.w_names + xScale_play(d.ngames) - 5;}
+            }
+            else {
+             if (d.nwins/d.ngames >= .5) {
+               return dim_col.left+dim_col.w_names + xScale_win(0.5) - 8;
+             }
+             else { return dim_col.left+dim_col.w_names + xScale_win(0.5) + 8; };
+            }
+          })
+          .attr("y", function(d,i) {
+            return (dim_col.h_col+dim_col.h_btwn)*i + dim_col.h_col/2 +4;
+          })
+          .text(function(d) {
+            if (metric=="play") { return d3.format(",")(d.ngames); }
+            else { return d3.format(".0%")(d.nwins/d.ngames); }
+          })
+          .style("text-anchor", function(d) {
+            if (metric=="play") {
+              if (xScale_play(d.ngames) <= dim_col.w_colmin) { return "start"; }
+              else { return "end";}
+            }
+            else {
+              if (d.nwins/d.ngames >= .5) { return "end"; }
+              else { return "start"; }
+            }
+          });
   group1200.append("text") // count labels
-           .attr("class", "countLabel");
+           .attr("class", "countLabel")
+           .attr("x", function(d) {
+             if (metric=="play") {
+               if (xScale_play(d.ngames) <= dim_col.w_colmin) {
+                 return dim_col.left+dim_col.w_names + xScale_play(d.ngames) + 3;
+               }
+               else { return dim_col.left+dim_col.w_names + xScale_play(d.ngames) - 5;}
+             }
+             else {
+              if (d.nwins/d.ngames >= .5) {
+                return dim_col.left+dim_col.w_names + xScale_win(0.5) - 8;
+              }
+              else { return dim_col.left+dim_col.w_names + xScale_win(0.5) + 8; };
+             }
+           })
+           .attr("y", function(d,i) {
+             return (dim_col.h_col+dim_col.h_btwn)*i + dim_col.h_col/2 +4;
+           })
+           .text(function(d) {
+             if (metric=="play") { return d3.format(",")(d.ngames); }
+             else { return d3.format(".0%")(d.nwins/d.ngames); }
+           })
+           .style("text-anchor", function(d) {
+             if (metric=="play") {
+               if (xScale_play(d.ngames) <= dim_col.w_colmin) { return "start"; }
+               else { return "end";}
+             }
+             else {
+               if (d.nwins/d.ngames >= .5) { return "end"; }
+               else { return "start"; }
+             }
+           });
 
   // Create 50% lines for dot plots
   var currentHeight = d3.select("#col1").node().getBBox().height;
@@ -342,6 +435,44 @@ function setup() {
                           .attr("y2", function(d,i) {
                             return margin.top + dim_col.top + (dim_col.h_col+dim_col.h_btwn)*(i+1)*5 - dim_col.h_btwn/2;
                           });
+
+  // On click
+  champion_groups = svg.selectAll(".champion_group");
+  champion_groups.on("click", function(d) {
+    var currentChampion = d.champion;
+    var nextChampion;
+    // Change font weight of name labels in all columns
+    champion_groups.selectAll(".nameLabel") // name text
+                   .style("font-family", 'radnika-regular')
+                   .text(function(d) { return d.champion; })
+                   .filter(function(d,i) {
+                     return d.champion==currentChampion;
+                   })
+                   .style("font-family", 'radnika-bold')
+                   .text(function(d) {
+                     return "#" + findRank(dataset, metric, d.queueid, d.champion) + " " + d.champion; // adds rank value to name label
+                   });
+    // Change count labels in all columns
+    champion_groups.selectAll(".countLabel")
+                   .style("fill", "none")
+                   .filter(function(d) {
+                     return d.champion==currentChampion;
+                   })
+                   .style("fill", function(d) {
+                     if (xScale_play(d.ngames) <= dim_col.w_colmin) {
+                       return "black";
+                     }
+                     else { return "white";}
+                   });
+
+    // Change bar color in all columns
+    champion_groups.selectAll(".bar")
+                   .style("fill", barColor)
+                   .filter(function(d) {
+                     return d.champion==currentChampion;
+                   })
+                   .style("fill", highlightBarColor);
+   }) // end on click
 }; // end setup function
 
 // Resizing
