@@ -47,20 +47,22 @@ var updateMouseover = function() {
                      return "#" + findRank(dataset, metric, d.queueid, d.champion) + " " + d.champion; // adds rank value to name label
                    });
     // Change count labels in all columns
-    champion_groups.selectAll(".countLabel")
-                   .style("fill", "none")
-                   .filter(function(d) {
-                     return d.champion==currentChampion;
-                   })
-                   .style("fill", function(d) {
-                     if (metric=="play") {
-                       if (xScale_play(d.ngames) <= dim_col.w_colmin) {
-                         return "black";
+    if (document.getElementById("graphic").getBoundingClientRect().width>=680) {
+      champion_groups.selectAll(".countLabel")
+                     .style("fill", "none")
+                     .filter(function(d) {
+                       return d.champion==currentChampion;
+                     })
+                     .style("fill", function(d) {
+                       if (metric=="play") {
+                         if (xScale_play(d.ngames) <= dim_col.w_colmin) {
+                           return "black";
+                         }
+                         else { return "white";}
                        }
-                       else { return "white";}
-                     }
-                     else { return "black";}
-                   });
+                       else { return "black";}
+                     });
+    }; // end if 
 
     if (metric=="play") {
       // Change bar color in all columns
