@@ -16,7 +16,7 @@ var w_bars = dim_col.w_col - dim_col.left - dim_col.w_names - dim_col.btwn_col1 
 var orig_dataset; // original dataset
 var dataset_threemodes; // dataset with the three game modes
 var dataset; // dataset that changes based on filters
-var metric, sort, xScale_play, xScale_win;
+var metric, sort, xScale_play, xScale_win, global_min_ngames, global_max_ngames;
 
 // Defining groups
 var breakline, group420, group450, group1200, group420enter, group450enter, group1200enter;
@@ -57,6 +57,8 @@ d3.csv('data/champion_stats_by_queue.csv', rowConverter, function(data) {
                           return d.queueid!=470;
                         }); // save data that doesn't include the 470 mode
   dataset = dataset_threemodes; // default dataset - showing all champions
+  global_min_ngames = d3.min(dataset, function(d) { return d.ngames; });
+  global_max_ngames = d3.max(dataset, function(d) { return d.ngames; });
 
   init();
 
@@ -88,6 +90,8 @@ d3.csv('data/champion_stats_by_queue.csv', rowConverter, function(data) {
   // If filtering by champion
   d3.select("#filter-class").on("change", function() {
     var filterSelection = d3.select(this).node().value; //selection value
+
+    // get dataset to be used
     if (filterSelection == "all") {
       dataset = dataset_threemodes;
     }
@@ -105,7 +109,7 @@ d3.csv('data/champion_stats_by_queue.csv', rowConverter, function(data) {
 function setup() {
   // Scale functions
   xScale_play = d3.scaleLinear()
-                  .domain([d3.min(dataset, function(d) { return d.ngames; }), d3.max(dataset, function(d) { return d.ngames})])
+                  .domain([global_min_ngames, global_max_ngames])
                   .range([1, dim_col.w_col - dim_col.w_names - dim_col.btwn_colnames]);
   xScale_win = d3.scaleLinear()
                   .domain([0.32, 0.7])
@@ -489,7 +493,7 @@ function resize() {
   dim_col.w_col = (w_svg-margin.left-margin.right)/3;
   w_bars = dim_col.w_col - dim_col.left - dim_col.w_names - dim_col.btwn_col1 - dim_col.btwn_col2;
   xScale_play = d3.scaleLinear()
-                  .domain([d3.min(dataset, function(d) { return d.ngames; }), d3.max(dataset, function(d) { return d.ngames})])
+                  .domain([global_min_ngames, global_max_ngames])
                   .range([1, dim_col.w_col - dim_col.w_names - dim_col.btwn_colnames]);
   xScale_win = d3.scaleLinear()
                   .domain([0.32, 0.7])

@@ -1,4 +1,5 @@
 body,html {
+  min-width: 380px;
 }
 @font-face {
   font-family: radnika-black;
