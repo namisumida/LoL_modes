@@ -1,0 +1,194 @@
+body,html {
+}
+@font-face {
+  font-family: radnika-black;
+  src: url("fonts/Radnika-Black.otf");
+}
+@font-face {
+  font-family: radnika-bold;
+  src: url("fonts/Radnika-Bold.otf");
+}
+@font-face {
+  font-family: radnika-regular;
+  src: url("fonts/Radnika-Regular.otf");
+}
+@font-face {
+  font-family: radnika-condensed;
+  src: url("fonts/Radnika-Condensed.otf");
+}
+@font-face {
+  font-family: radnika-medium;
+  src: url("fonts/Radnika-Medium.otf");
+}
+@font-face {
+  font-family: stratum-medium;
+  src: url("fonts/Stratum2-Medium.otf");
+}
+
+#title {
+  position: relative;
+  margin: 0 auto;
+  max-width: 650px;
+  margin-top: 30px;
+}
+h1 {
+  font-family: radnika-black;
+  font-size: 30px;
+  text-align: center;
+  margin: 0;
+}
+h3 {
+  font-family: radnika-medium;
+  font-size: 14px;
+  text-align: center;
+}
+#title-line {
+  stroke-width: 2;
+  stroke: #a19da8;
+}
+#options {
+  position: relative;
+  margin: 0 auto;
+  max-width: 550px;
+  margin-top: 10px;
+}
+#container-options {
+  height: 60px;
+}
+#container-options-metrics {
+  position: relative;
+  height: 60px;
+  margin-right: 0;
+  float: left;
+  margin-left: 10px;
+  margin-right: 10px;
+}
+#container-options-sort {
+  position: relative;
+  height: 60px;
+  margin: 0;
+  float: left;
+  margin-left: 10px;
+  margin-right: 10px;
+}
+#container-options-filter {
+  position: relative;
+  width: 115px;
+  height: 60px;
+  margin: 0;
+  margin-left: 10px;
+  margin-right: 10px;
+  float: left;
+}
+#instructions {
+  position: relative;
+  margin: 0 auto;
+  margin-left: 10px;
+  margin-top: 10px;
+}
+p {
+  font-family: radnika-regular;
+  font-size: 13px;
+  text-align: left;
+}
+h5 {
+  margin: 8px;
+  color: #a19da8;
+  font-family: radnika-regular;
+}
+button {
+  background-color: none;
+  font-size: 14px;
+  border-radius: 3px;
+  width: 70px;
+  height: 30px;
+  font-weight: 600;
+  -webkit-transition-duration: 0.4s; /* Safari */
+  transition-duration: 0.4s;
+  color: #a19da8;
+  border: 1.5px solid #a19da8;
+  font-family: stratum-medium;
+  cursor: pointer;
+}
+#button-play {
+  background-color: rgb(79,39,79);
+  color: white;
+  width: 85px;
+}
+#button-count {
+  background-color: rgb(79,39,79);
+  color: white;
+  width: 85px;
+}
+#button-alpha {
+  width: 123px;
+}
+#filter-class {
+  background-color: rgb(79,39,79);
+  height: 30px;
+  width: 115px;
+  font-size: 13px;
+  color: white;
+  font-weight: 500;
+  font-family: radnika-bold;
+}
+
+#graphic {
+  position: relative;
+  margin: 0 auto;
+  height: 2630px;
+  max-width: 800px;
+  margin-top: 25px;
+}
+.midline {
+  stroke-width: 2;
+  opacity: .4;
+}
+.numline_label {
+  text-anchor: middle;
+  font-weight: 400;
+  font-size: 10px;
+  font-family: stratum-medium;
+}
+.mode_label {
+  text-anchor: middle;
+  font-size: 16px;
+  font-family: radnika-bold;
+}
+.dotDistance {
+  opacity: 0.5;
+}
+.nameLabel {
+  font-size: 12px;
+  text-anchor: end;
+  font-family: radnika-regular;
+  cursor: pointer;
+}
+.countLabel {
+  font-size: 12px;
+  fill: none;
+  font-family: stratum-medium;
+}
+.rankLabel {
+  font-size: 12px;
+  fill:none;
+  font-weight: bold;
+  text-anchor: end;
+  font-family: radnika-condensed;
+}
+.midline_label {
+  font-family: radnika-regular;
+}
+.breakline {
+  stroke: gray;
+  stroke-width: 0.1;
+}
+.background {
+  fill: white;
+}
+.bar {
+  cursor: pointer;
+}
+.dot {
+  cursor: pointer;
+}

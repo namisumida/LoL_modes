@@ -124,10 +124,12 @@ function setup() {
   // Second column - ARAM; 1200
   var col2 = svg.append("g") // make a group element
                 .attr("class", "column")
+                .attr("id", "col2")
                 .attr("transform", "translate(" + (margin.left+dim_col.w_col+dim_col.btwn_col1) + "," + margin.top + ")");
   // Third column - Nexus Blitz; 450
   var col3 = svg.append("g") // make a group element
                 .attr("class", "column")
+                .attr("id", "col3")
                 .attr("transform", "translate(" + (margin.left+dim_col.w_col*2+dim_col.btwn_col1+dim_col.btwn_col2) + "," + margin.top + ")");
 
   // Create labels
@@ -398,6 +400,7 @@ function setup() {
   var currentHeight = d3.select("#col1").node().getBBox().height;
   svg.append("line")
       .attr("class", "midline")
+      .attr("id", "midline1")
       .attr("x1", margin.left + dim_col.left+dim_col.w_names + xScale_win(.5))
       .attr("x2", margin.left + dim_col.left+dim_col.w_names + xScale_win(.5))
       .attr("y1", margin.top + 28)
@@ -405,6 +408,7 @@ function setup() {
       .style("stroke", "none");
   svg.append("line")
       .attr("class", "midline")
+      .attr("id", "midline2")
       .attr("x1", (margin.left+dim_col.w_col+dim_col.btwn_col1) + dim_col.left+dim_col.w_names + xScale_win(.5))
       .attr("x2", (margin.left+dim_col.w_col+dim_col.btwn_col1) + dim_col.left+dim_col.w_names + xScale_win(.5))
       .attr("y1", margin.top + 28)
@@ -412,6 +416,7 @@ function setup() {
       .style("stroke", "none");
   svg.append("line")
       .attr("class", "midline")
+      .attr("id", "midline3")
       .attr("x1", margin.left+dim_col.w_col*2+dim_col.btwn_col1+dim_col.btwn_col2 + dim_col.left+dim_col.w_names + xScale_win(.5))
       .attr("x2", margin.left+dim_col.w_col*2+dim_col.btwn_col1+dim_col.btwn_col2 + dim_col.left+dim_col.w_names + xScale_win(.5))
       .attr("y1", margin.top + 28)
@@ -453,17 +458,19 @@ function setup() {
                      return "#" + findRank(dataset, metric, d.queueid, d.champion) + " " + d.champion; // adds rank value to name label
                    });
     // Change count labels in all columns
-    champion_groups.selectAll(".countLabel")
-                   .style("fill", "none")
-                   .filter(function(d) {
-                     return d.champion==currentChampion;
-                   })
-                   .style("fill", function(d) {
-                     if (xScale_play(d.ngames) <= dim_col.w_colmin) {
-                       return "black";
-                     }
-                     else { return "white";}
-                   });
+    if (document.getElementById("graphic").getBoundingClientRect().width>=680) {
+      champion_groups.selectAll(".countLabel")
+                     .style("fill", "none")
+                     .filter(function(d) {
+                       return d.champion==currentChampion;
+                     })
+                     .style("fill", function(d) {
+                       if (xScale_play(d.ngames) <= dim_col.w_colmin) {
+                         return "black";
+                       }
+                       else { return "white";}
+                     });
+    }; // end if statement
 
     // Change bar color in all columns
     champion_groups.selectAll(".bar")
@@ -488,7 +495,7 @@ function resize() {
                   .domain([0.32, 0.7])
                   .range([1, dim_col.w_col - dim_col.w_names - dim_col.btwn_colnames]);
 
-  updateBarsDots();
+  updateGraphicResizing();
 }; // end resize function
 
 function init() {

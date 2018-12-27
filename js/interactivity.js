@@ -832,3 +832,244 @@ var updateBarsDots = function(dataset, sort, metric) {
   updateMouseover();
   updateSizing();
 }; // end def of update bars
+
+function updateGraphicResizing() { // a function to redraw graphic once resized
+
+  // Columns
+  svg.select("#col1").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+  svg.select("#col2").attr("transform", "translate(" + (margin.left+dim_col.w_col+dim_col.btwn_col1) + "," + margin.top + ")");
+  svg.select("#col3").attr("transform", "translate(" + (margin.left+dim_col.w_col*2+dim_col.btwn_col1+dim_col.btwn_col2) + "," + margin.top + ")");
+
+  // Mode labels
+  svg.selectAll(".mode_label")
+      .attr("x", dim_col.w_col/2);
+
+  // Background
+  group420.select(".background") // to allow clickability between name and rect
+          .attr("y", function(d,i) {
+            return (dim_col.h_col+dim_col.h_btwn)*i;
+          });
+  group450.select(".background") // to allow clickability between name and rect
+          .attr("y", function(d,i) {
+            return (dim_col.h_col+dim_col.h_btwn)*i;
+          });
+  group1200.select(".background") // to allow clickability between name and rect
+          .attr("y", function(d,i) {
+            return (dim_col.h_col+dim_col.h_btwn)*i;
+          });
+
+  // Champion names
+  group420.select(".nameLabel")
+          .attr("y", function(d,i) {
+            return (dim_col.h_col+dim_col.h_btwn)*i + dim_col.h_col/2 +3;
+          });
+  group450.select(".nameLabel")
+          .attr("y", function(d,i) {
+            return (dim_col.h_col+dim_col.h_btwn)*i + dim_col.h_col/2 +3;
+          });
+  group1200.select(".nameLabel")
+           .attr("y", function(d,i) {
+             return (dim_col.h_col+dim_col.h_btwn)*i + dim_col.h_col/2 +3;
+           });
+  // Count labels
+  // Change count labels in all columns
+  if (document.getElementById("graphic").getBoundingClientRect().width>=680) {
+    group420.select(".countLabel")
+            .attr("x", function(d) {
+              if (metric=="play") {
+                if (xScale_play(d.ngames) <= dim_col.w_colmin) {
+                  return dim_col.left+dim_col.w_names + xScale_play(d.ngames) + 3;
+                }
+                else { return dim_col.left+dim_col.w_names + xScale_play(d.ngames) - 5;}
+              }
+              else {
+               if (d.nwins/d.ngames >= .5) {
+                 return dim_col.left+dim_col.w_names + xScale_win(0.5) - 8;
+               }
+               else { return dim_col.left+dim_col.w_names + xScale_win(0.5) + 8; };
+              }
+            })
+            .attr("y", function(d,i) {
+              return (dim_col.h_col+dim_col.h_btwn)*i+dim_col.h_col/2+4;
+            })
+            .style("text-anchor", function(d) {
+              if (metric=="play") {
+                if (xScale_play(d.ngames) <= dim_col.w_colmin) { return "start"; }
+                else { return "end";}
+              }
+              else {
+                if (d.nwins/d.ngames >= .5) { return "end"; }
+                else { return "start"; }
+              }
+            });
+    group450.select(".countLabel")
+            .attr("x", function(d) {
+              if (metric=="play") {
+                if (xScale_play(d.ngames) <= dim_col.w_colmin) {
+                  return dim_col.left+dim_col.w_names + xScale_play(d.ngames) + 3;
+                }
+                else { return dim_col.left+dim_col.w_names + xScale_play(d.ngames) - 5;}
+              }
+              else {
+               if (d.nwins/d.ngames >= .5) {
+                 return dim_col.left+dim_col.w_names + xScale_win(0.5) - 8;
+               }
+               else { return dim_col.left+dim_col.w_names + xScale_win(0.5) + 8; };
+              }
+            })
+            .attr("y", function(d,i) {
+              return (dim_col.h_col+dim_col.h_btwn)*i+dim_col.h_col/2+4;
+            })
+            .style("text-anchor", function(d) {
+              if (metric=="play") {
+                if (xScale_play(d.ngames) <= dim_col.w_colmin) { return "start"; }
+                else { return "end";}
+              }
+              else {
+                if (d.nwins/d.ngames >= .5) { return "end"; }
+                else { return "start"; }
+              }
+            });
+    group1200.select(".countLabel")
+             .attr("x", function(d) {
+               if (metric=="play") {
+                 if (xScale_play(d.ngames) <= dim_col.w_colmin) {
+                   return dim_col.left+dim_col.w_names + xScale_play(d.ngames) + 3;
+                 }
+                 else { return dim_col.left+dim_col.w_names + xScale_play(d.ngames) - 5;}
+               }
+               else {
+                if (d.nwins/d.ngames >= .5) {
+                  return dim_col.left+dim_col.w_names + xScale_win(0.5) - 8;
+                }
+                else { return dim_col.left+dim_col.w_names + xScale_win(0.5) + 8; };
+               }
+             })
+             .attr("y", function(d,i) {
+               return (dim_col.h_col+dim_col.h_btwn)*i+dim_col.h_col/2+4;
+             })
+             .style("text-anchor", function(d) {
+               if (metric=="play") {
+                 if (xScale_play(d.ngames) <= dim_col.w_colmin) { return "start"; }
+                 else { return "end";}
+               }
+               else {
+                 if (d.nwins/d.ngames >= .5) { return "end"; }
+                 else { return "start"; }
+               }
+             });
+  }
+  else {
+    svg.selectAll(".countLabel").style("fill", "none"); //no fill
+  }; // end else
+
+  // bars
+  group420.select(".bar")
+          .attr("width", function(d) {
+            return xScale_play(d.ngames);
+          })
+          .attr("y", function(d,i) {
+            return (dim_col.h_col+dim_col.h_btwn)*i;
+          });
+  group450.select(".bar")
+          .attr("width", function(d) {
+            return xScale_play(d.ngames);
+          })
+          .attr("y", function(d,i) {
+            return (dim_col.h_col+dim_col.h_btwn)*i;
+          });
+  group1200.select(".bar")
+          .attr("width", function(d) {
+            return xScale_play(d.ngames);
+          })
+          .attr("y", function(d,i) {
+            return (dim_col.h_col+dim_col.h_btwn)*i;
+          });
+
+  // Dot distance
+  group420.select(".dotDistance")
+           .attr("x", function(d) {
+              var winRate = +(d.nwins/d.ngames).toFixed(2)
+              if (winRate > 0.5) {
+                return dim_col.left+dim_col.w_names + xScale_win(.5);
+              }
+              else {
+                return dim_col.left+dim_col.w_names  + xScale_win(winRate);
+              }
+           })
+           .attr("y", function(d,i) {
+             return (dim_col.h_col+dim_col.h_btwn)*i + dim_col.h_col/2-1;
+           })
+           .attr("width", function(d) {
+             return Math.abs(xScale_win(+(d.nwins/d.ngames).toFixed(2))-xScale_win(.5));
+           });
+  group450.select(".dotDistance")
+           .attr("x", function(d) {
+              var winRate = +(d.nwins/d.ngames).toFixed(2)
+              if (winRate > 0.5) {
+                return dim_col.left+dim_col.w_names + xScale_win(.5);
+              }
+              else {
+                return dim_col.left+dim_col.w_names  + xScale_win(winRate);
+              }
+           })
+           .attr("y", function(d,i) {
+             return (dim_col.h_col+dim_col.h_btwn)*i + dim_col.h_col/2-1;
+           })
+           .attr("width", function(d) {
+             return Math.abs(xScale_win(+(d.nwins/d.ngames).toFixed(2))-xScale_win(.5));
+           });
+  group1200.select(".dotDistance")
+           .attr("x", function(d) {
+              var winRate = +(d.nwins/d.ngames).toFixed(2)
+              if (winRate > 0.5) {
+                return dim_col.left+dim_col.w_names + xScale_win(.5);
+              }
+              else {
+                return dim_col.left+dim_col.w_names  + xScale_win(winRate);
+              }
+           })
+           .attr("y", function(d,i) {
+             return (dim_col.h_col+dim_col.h_btwn)*i + dim_col.h_col/2-1;
+           })
+           .attr("width", function(d) {
+             return Math.abs(xScale_win(+(d.nwins/d.ngames).toFixed(2))-xScale_win(.5));
+           });
+  // Dots
+  group420.select(".dot")
+          .attr("cx", function(d) {
+            return dim_col.left+dim_col.w_names + xScale_win(+(d.nwins/d.ngames).toFixed(2));
+          })
+          .attr("cy", function(d,i) {
+            return (dim_col.h_col+dim_col.h_btwn)*i + dim_col.h_col/2;
+          });
+  group450.select(".dot")
+          .attr("cx", function(d) {
+            return dim_col.left+dim_col.w_names + xScale_win(+(d.nwins/d.ngames).toFixed(2));
+          })
+          .attr("cy", function(d,i) {
+            return (dim_col.h_col+dim_col.h_btwn)*i + dim_col.h_col/2;
+          });
+  group1200.select(".dot")
+            .attr("cx", function(d) {
+              return dim_col.left+dim_col.w_names + xScale_win(+(d.nwins/d.ngames).toFixed(2));
+            })
+            .attr("cy", function(d,i) {
+              return (dim_col.h_col+dim_col.h_btwn)*i + dim_col.h_col/2;
+            });
+
+  // 50% midline label
+  svg.selectAll(".numline_label")
+      .attr("x", dim_col.left+dim_col.w_names + xScale_win(.5));
+  svg.select("#midline1")
+      .attr("x1", margin.left + dim_col.left+dim_col.w_names + xScale_win(.5))
+      .attr("x2", margin.left + dim_col.left+dim_col.w_names + xScale_win(.5));
+  svg.select("#midline2")
+      .attr("x1", (margin.left+dim_col.w_col+dim_col.btwn_col1) + dim_col.left+dim_col.w_names + xScale_win(.5))
+      .attr("x2", (margin.left+dim_col.w_col+dim_col.btwn_col1) + dim_col.left+dim_col.w_names + xScale_win(.5));
+  svg.select("#midline3")
+      .attr("x1", margin.left+dim_col.w_col*2+dim_col.btwn_col1+dim_col.btwn_col2 + dim_col.left+dim_col.w_names + xScale_win(.5))
+      .attr("x2", margin.left+dim_col.w_col*2+dim_col.btwn_col1+dim_col.btwn_col2 + dim_col.left+dim_col.w_names + xScale_win(.5));
+
+  updateSizing();
+}; // end updateGraphic Resizing function
