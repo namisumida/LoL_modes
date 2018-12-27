@@ -62,7 +62,7 @@ var updateMouseover = function() {
                        }
                        else { return "black";}
                      });
-    }; // end if 
+    }; // end if
 
     if (metric=="play") {
       // Change bar color in all columns
@@ -1073,5 +1073,14 @@ function updateGraphicResizing() { // a function to redraw graphic once resized
       .attr("x1", margin.left+dim_col.w_col*2+dim_col.btwn_col1+dim_col.btwn_col2 + dim_col.left+dim_col.w_names + xScale_win(.5))
       .attr("x2", margin.left+dim_col.w_col*2+dim_col.btwn_col1+dim_col.btwn_col2 + dim_col.left+dim_col.w_names + xScale_win(.5));
 
-  updateSizing();
+  // breakline
+  svg.selectAll(".breakline")
+      .attr("x2", w_svg-margin.left-margin.right)
+      .attr("y1", function(d,i) {
+        return margin.top + dim_col.top + (dim_col.h_col+dim_col.h_btwn)*(i+1)*5 - dim_col.h_btwn/2;
+      })
+      .attr("y2", function(d,i) {
+        return margin.top + dim_col.top + (dim_col.h_col+dim_col.h_btwn)*(i+1)*5 - dim_col.h_btwn/2;
+      });
+
 }; // end updateGraphic Resizing function
