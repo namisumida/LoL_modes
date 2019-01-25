@@ -125,7 +125,7 @@ var updateButton = function(button) {
     otherButtonID = "#button-count";
   }
   d3.select(otherButtonID).style("background-color", "white")
-                          .style("color", d3.color("#a19da8"));
+                          .style("color", d3.rgb(79,39,79));
 }; // end update button
 
 var updateSizing = function() {
