@@ -1,4 +1,40 @@
 function init() {
+  const markup = `
+  <section id="options">
+    <div id="container-options">
+      <div id="container-options-metrics">
+        <h5>Show:</h5>
+        <button type="button" id="button-play" value="play">Play count</button>
+        <button type="button" id="button-win" value="win">Win rate</button>
+      </div>
+      <div id="container-options-sort">
+        <h5>Sort by:</h5>
+        <button type="button" id="button-count" value="count">Play count</button>
+        <button type="button" id="button-alpha" value="alpha">Champion name</button>
+      </div>
+      <div id="container-options-filter">
+        <h5>Filter:</h5>
+        <select id="filter-class">
+            <option value="all" selected="selected" class="dropdown-class">All classes</option>
+            <option value="Artillery" class="dropdown-class">Artillery</option>
+            <option value="Controller" class="dropdown-class">Controller</option>
+            <option value="Fighter" class="dropdown-class">Fighter</option>
+            <option value="Mage" class="dropdown-class">Mage</option>
+            <option value="Marksmen" class="dropdown-class">Marksmen</option>
+            <option value="Slayer" class="dropdown-class">Slayer</option>
+            <option value="Tank" class="dropdown-class">Tank</option>
+            <option value="Unique" class="dropdown-class">Unique</option>
+        </select>
+      </div>
+    </div>
+    <div id="instructions">
+      <p>Click on each champion for details.</p>
+    </div>
+  </section>
+  <section id="graphic">
+    <svg id="svg-barchart" width="100%" height="100%"></svg>
+  </section>`
+  document.getElementById("js-gamemodes").innerHTML = markup;
   var svg = d3.select("#svg-barchart");
   var w_svg = document.getElementById('svg-barchart').getBoundingClientRect().width; // get width and height based on window size
   var n_champion = 141;
